@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Lokal SQLite fayllari
+/enotebook
+/database/*.sqlite

@@ -2,23 +2,32 @@
 
 namespace App\Providers;
 
+use App\Modules\Routine\AladhanSource;
+use App\Modules\Routine\PrayerTimeSource;
+use App\Modules\Telegram\Auth\InitDataValidator;
+use App\Modules\Telegram\TelegramClient;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        $this->app->bind(InitDataValidator::class, fn () => new InitDataValidator(
+            (string) config('telegram.bot_token'),
+            (int) config('telegram.init_data_ttl'),
+        ));
+
+        $this->app->bind(PrayerTimeSource::class, AladhanSource::class);
+
+        $this->app->bind(TelegramClient::class, fn () => new TelegramClient(
+            (string) config('telegram.bot_token'),
+        ));
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        RateLimiter::for('telegram', fn () => Limit::perSecond(25));
     }
 }

@@ -13,18 +13,21 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            // Kirish faqat Telegram orqali: parol va email yo'q.
+            $table->unsignedBigInteger('telegram_id')->unique();
+            $table->string('telegram_username')->nullable();
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
+            $table->string('gender', 6)->nullable(); // male | female (zal dasturlari uchun)
+            $table->string('language_code', 8)->nullable();
+            // Mintaqa (viloyat/shahar) 3-vazifada regions jadvali bilan bog'lanadi.
+            $table->unsignedBigInteger('region_id')->nullable()->index();
+            $table->decimal('latitude', 9, 6)->nullable();
+            $table->decimal('longitude', 9, 6)->nullable();
+            $table->string('timezone')->default('Asia/Tashkent');
+            $table->string('onboarding_step')->default('name'); // name | location | gender | done
             $table->rememberToken();
             $table->timestamps();
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -43,7 +46,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
 };

@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Modules\Geo\Region;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -13,37 +14,71 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public const ONBOARDING_DONE = 'done';
+
     /**
-     * The attributes that are mass assignable.
-     *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'telegram_id',
+        'telegram_username',
+        'first_name',
+        'last_name',
+        'gender',
+        'language_code',
+        'region_id',
+        'latitude',
+        'longitude',
+        'timezone',
+        'onboarding_step',
+        'is_admin',
+        'planning_mode',
+        'planning_time',
+        'weekly_planning_day',
+        'weekly_planning_time',
+        'prayer_reminders',
+        'prayer_remind_before',
+        'task_reminders',
+        'task_remind_before',
+        'day_summary',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var list<string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'telegram_id' => 'integer',
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'is_admin' => 'boolean',
+            'prayer_reminders' => 'boolean',
+            'task_reminders' => 'boolean',
+            'day_summary' => 'boolean',
+            'weekly_planning_day' => 'integer',
         ];
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    public function fullName(): string
+    {
+        return trim($this->first_name.' '.($this->last_name ?? ''));
+    }
+
+    public function hasFinishedOnboarding(): bool
+    {
+        return $this->onboarding_step === self::ONBOARDING_DONE;
     }
 }

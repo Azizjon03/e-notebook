@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 it('opens the Today page through Inertia', function () {
-    $this->get('/')
+    $this->actingAs(User::factory()->create())
+        ->get('/')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Today')

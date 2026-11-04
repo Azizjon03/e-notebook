@@ -1,8 +1,18 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use App\Modules\Routine\PrayerTime;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// Har oy 25-kuni keyingi oy, har kuni ertalab esa joriy oy (yetishmagan bo'lsa) yuklanadi.
+Schedule::command('prayer-times:fetch --next')->monthlyOn(25, '03:00')->timezone('Asia/Tashkent');
+Schedule::command('prayer-times:fetch')->dailyAt('03:30')->timezone('Asia/Tashkent')
+    ->when(fn () => PrayerTime::whereDate('date', now('Asia/Tashkent')->toDateString())->doesntExist());
+
+Schedule::command('reminders:dispatch')->everyMinute()->withoutOverlapping();
+
+// Eski eslatma loglari (30 kundan eski) tozalanadi.
+Schedule::call(fn () => DB::table('reminder_logs')->where('sent_at', '<', now()->subDays(30))->delete())->daily();
+
+// Kunlik baza zaxirasi (14 kun saqlanadi).
+Schedule::command('backup:database')->dailyAt('04:00')->timezone('Asia/Tashkent');
