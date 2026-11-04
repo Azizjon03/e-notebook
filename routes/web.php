@@ -1,6 +1,8 @@
 <?php
 
 use App\Modules\Telegram\Auth\WebAppLoginController;
+use App\Modules\Telegram\Webhook\WebhookController;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,3 +18,7 @@ Route::middleware('auth')->group(function () {
         'date' => now(auth()->user()->timezone)->toDateString(),
     ]))->name('today');
 });
+
+Route::post('/telegram/webhook', WebhookController::class)
+    ->withoutMiddleware(ValidateCsrfToken::class)
+    ->name('telegram.webhook');
