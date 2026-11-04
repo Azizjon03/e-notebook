@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.jsx';
+
+/* Dizayn ranglari (Design artifact v7, och yashil) */
+@theme {
+    --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+
+    --color-g800: #166b40;
+    --color-g700: #1f8550;
+    --color-g500: #3baf72;
+    --color-g100: #e8f5ec;
+    --color-bg: #f4f8f5;
+    --color-ink: #13241a;
+    --color-muted: #536259;
+    --color-line: #dce5df;
+    --color-gold: #8a6414;
+    --color-blue: #2f5f94;
+    --color-red: #b3261e;
+}
