@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Planner\TaskController;
 use App\Modules\Telegram\Auth\WebAppLoginController;
 use App\Modules\Telegram\Webhook\WebhookController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -14,9 +15,14 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', fn () => Inertia::render('Today', [
-        'date' => now(auth()->user()->timezone)->toDateString(),
-    ]))->name('today');
+    Route::get('/', [TaskController::class, 'today'])->name('today');
+
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::post('/tasks/carry-over', [TaskController::class, 'carryOver'])->name('tasks.carry-over');
+    Route::patch('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
+    Route::post('/tasks/{task}/move-tomorrow', [TaskController::class, 'moveToTomorrow'])->name('tasks.move-tomorrow');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
 Route::post('/telegram/webhook', WebhookController::class)
