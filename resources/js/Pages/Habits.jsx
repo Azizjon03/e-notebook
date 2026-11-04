@@ -1,4 +1,4 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 
 const DAYS = [
@@ -77,6 +77,11 @@ function HabitRow({ habit }) {
                         <span className="w-16 pt-1.5 text-muted">Kunlar</span>
                         <DayPicker value={habit.weekdays} onChange={(days) => patch(habit, { weekdays: days })} />
                     </div>
+                    {habit.key === 'gym' && (
+                        <Link href="/gym" className="inline-block font-semibold text-g700">
+                            Zal dasturi va mashg'ulotlar →
+                        </Link>
+                    )}
                     {habit.custom && (
                         <button
                             type="button"

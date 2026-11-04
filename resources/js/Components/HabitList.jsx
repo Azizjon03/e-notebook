@@ -49,7 +49,7 @@ function CheckHabit({ habit, date, canMark }) {
     };
 
     return (
-        <li>
+        <li className="flex items-center gap-2">
             <button
                 type="button"
                 disabled={!canMark}
@@ -63,6 +63,11 @@ function CheckHabit({ habit, date, canMark }) {
                 </span>
                 {habit.name}
             </button>
+            {habit.key === 'gym' && (
+                <Link href="/gym" className="shrink-0 rounded-xl bg-g700 px-3 py-3 text-sm font-bold text-white">
+                    Mashg'ulot
+                </Link>
+            )}
         </li>
     );
 }
