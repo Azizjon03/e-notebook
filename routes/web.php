@@ -5,6 +5,7 @@ use App\Modules\Admin\EnsureAdmin;
 use App\Modules\Planner\CalendarController;
 use App\Modules\Planner\TaskController;
 use App\Modules\Routine\HabitController;
+use App\Modules\Study\StudyController;
 use App\Modules\Telegram\Auth\WebAppLoginController;
 use App\Modules\Telegram\Webhook\WebhookController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -27,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/habits/{habit}', [HabitController::class, 'update'])->name('habits.update');
     Route::delete('/habits/{habit}', [HabitController::class, 'destroy'])->name('habits.destroy');
     Route::post('/habits/{habit}/entry', [HabitController::class, 'entry'])->name('habits.entry');
+
+    Route::get('/study', [StudyController::class, 'index'])->name('study');
+    Route::post('/study/start', [StudyController::class, 'start'])->name('study.start');
+    Route::post('/study/{session}/stop', [StudyController::class, 'stop'])->name('study.stop');
+    Route::delete('/study/{session}', [StudyController::class, 'destroy'])->name('study.destroy');
 
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::post('/tasks/carry-over', [TaskController::class, 'carryOver'])->name('tasks.carry-over');

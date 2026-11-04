@@ -6,7 +6,7 @@ import PrayerTimes from '../Components/PrayerTimes';
 import TaskItem from '../Components/TaskItem';
 import { addDays, formatLong } from '../lib/dates';
 
-export default function Today({ date, today, tasks, stats, overdue, prayers, habits, now }) {
+export default function Today({ date, today, tasks, stats, overdue, prayers, habits, now, level }) {
     const isToday = date === today;
     const canMark = date <= today;
     const percent = stats.total ? Math.round((stats.done / stats.total) * 100) : 0;
@@ -24,6 +24,11 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
                     <div className="text-center">
                         <h1 className="text-2xl font-extrabold">{title}</h1>
                         <p className="text-sm text-white/80">{formatLong(date)}</p>
+                        {level && (
+                            <Link href="/study" className="mt-1 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-bold">
+                                {level.level}-daraja · {level.total} ball
+                            </Link>
+                        )}
                     </div>
                     <Link href={`/?date=${addDays(date, 1)}`} preserveScroll className="rounded-lg px-2 py-1 text-lg" aria-label="Keyingi kun">
                         ›

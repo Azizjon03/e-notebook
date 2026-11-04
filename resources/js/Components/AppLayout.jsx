@@ -4,6 +4,7 @@ const TABS = [
     { href: '/', label: 'Bugun', match: (url) => url === '/' || url.startsWith('/?') },
     { href: '/calendar', label: 'Kalendar', match: (url) => url.startsWith('/calendar') },
     { href: '/habits', label: 'Odatlar', match: (url) => url.startsWith('/habits') },
+    { href: '/study', label: "O'qish", match: (url) => url.startsWith('/study') },
 ];
 
 export default function AppLayout({ children }) {

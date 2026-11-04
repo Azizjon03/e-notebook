@@ -97,7 +97,7 @@ class HabitController
     /**
      * Odat belgisi: check — almashadi, count/duration — qiymat yoziladi.
      */
-    public function entry(Request $request, Habit $habit): RedirectResponse
+    public function entry(Request $request, Habit $habit, HabitPoints $points): RedirectResponse
     {
         $data = $request->validate([
             'date' => ['required', 'date_format:Y-m-d'],
@@ -117,6 +117,7 @@ class HabitController
             $entry->done_at = $habit->isReachedBy($entry->value) ? ($entry->done_at ?? now()) : null;
         }
         $entry->save();
+        $points->sync($habit, $entry);
 
         return back();
     }

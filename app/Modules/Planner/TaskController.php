@@ -2,6 +2,7 @@
 
 namespace App\Modules\Planner;
 
+use App\Modules\Core\Points;
 use App\Modules\Routine\DailyEntry;
 use App\Modules\Routine\Habit;
 use App\Modules\Routine\HabitDefaults;
@@ -39,6 +40,7 @@ class TaskController
             'prayers' => $this->prayers($request, $date),
             'habits' => $this->habits($request, $day),
             'now' => CarbonImmutable::now($tz)->format('H:i'),
+            'level' => Points::level(app(Points::class)->total($request->user())),
         ]);
     }
 
