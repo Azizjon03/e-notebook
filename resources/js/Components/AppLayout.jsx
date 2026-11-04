@@ -5,6 +5,7 @@ const TABS = [
     { href: '/calendar', label: 'Kalendar', match: (url) => url.startsWith('/calendar') },
     { href: '/habits', label: 'Odatlar', match: (url) => url.startsWith('/habits') },
     { href: '/study', label: "O'qish", match: (url) => url.startsWith('/study') },
+    { href: '/books', label: 'Kitoblar', match: (url) => url.startsWith('/books') },
 ];
 
 export default function AppLayout({ children }) {
@@ -32,7 +33,7 @@ export default function AppLayout({ children }) {
                             <Link
                                 key={tab.href}
                                 href={tab.href}
-                                className={`flex-1 py-3 text-center text-sm font-bold ${active ? 'text-g700' : 'text-muted'}`}
+                                className={`flex-1 py-3 text-center text-[13px] font-bold ${active ? 'text-g700' : 'text-muted'}`}
                             >
                                 <span className={`mx-auto mb-1 block h-1 w-8 rounded-full ${active ? 'bg-g700' : 'bg-transparent'}`} />
                                 {tab.label}

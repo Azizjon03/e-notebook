@@ -122,6 +122,7 @@ class StudyController
     {
         return match (true) {
             $reason === 'streak' => '7 kunlik ketma-ketlik',
+            str_starts_with($reason, 'ilm_reading') => 'Ilm kitobi o\'qildi',
             str_ends_with($type, 'StudySession') => 'O\'qish sessiyasi',
             str_ends_with($type, 'DailyEntry') => 'Odat bajarildi',
             default => 'Ball',
