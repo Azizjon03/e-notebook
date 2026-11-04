@@ -18,7 +18,8 @@ class DispatchReminders extends Command
         $now = CarbonImmutable::now('UTC');
         $count = 0;
 
-        User::where('onboarding_step', User::ONBOARDING_DONE)->chunkById(200, function ($users) use ($planner, $now, &$count) {
+        // Telegramsiz (telefon bilan) ro'yxatdan o'tganlarga bot xabar yubora olmaydi.
+        User::where('onboarding_step', User::ONBOARDING_DONE)->whereNotNull('telegram_id')->chunkById(200, function ($users) use ($planner, $now, &$count) {
             foreach ($users as $user) {
                 foreach ($planner->due($user, $now) as $reminder) {
                     // Avval log: ikki parallel ishga tushishda ham bitta eslatma bir marta ketadi.

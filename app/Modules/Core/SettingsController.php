@@ -18,6 +18,7 @@ class SettingsController
         return Inertia::render('Settings', [
             'settings' => $request->user()->only(self::FIELDS),
             'regions' => Region::whereNull('parent_id')->orderBy('sort')->get(['id', 'name']),
+            'login' => ['phone' => $request->user()->phone, 'has_password' => $request->user()->password !== null],
         ]);
     }
 

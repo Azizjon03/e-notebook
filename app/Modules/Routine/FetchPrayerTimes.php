@@ -58,7 +58,7 @@ class FetchPrayerTimes extends Command
     {
         $text = "Namoz vaqtlarini yuklab bo'lmadi ({$month->format('Y-m')}): ".implode(', ', $failed);
 
-        User::where('is_admin', true)->each(function (User $admin) use ($telegram, $text) {
+        User::where('is_admin', true)->whereNotNull('telegram_id')->each(function (User $admin) use ($telegram, $text) {
             try {
                 $telegram->sendMessage($admin->telegram_id, $text);
             } catch (Throwable) {

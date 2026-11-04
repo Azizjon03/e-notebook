@@ -46,6 +46,7 @@ Keyin:
 ```bash
 touch database/database.sqlite
 php artisan migrate --seed
+php artisan prayer-times:fetch
 npm run build
 php artisan serve
 ```

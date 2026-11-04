@@ -10,7 +10,10 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->user()?->locale ?? $request->session()->get('locale');
+        $user = $request->user();
+        // Demo hisob umumiy: til faqat shu mehmonning sessiyasida saqlanadi.
+        $locale = $user && ! $user->is_demo ? $user->locale : null;
+        $locale ??= $request->session()->get('locale');
         app()->setLocale(Locale::valid($locale));
 
         return $next($request);

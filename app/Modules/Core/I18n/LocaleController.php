@@ -13,7 +13,9 @@ class LocaleController
         $data = $request->validate(['locale' => ['required', Rule::in(array_keys(Locale::ALL))]]);
 
         $request->session()->put('locale', $data['locale']);
-        $request->user()?->update(['locale' => $data['locale']]);
+        if ($request->user() && ! $request->user()->is_demo) {
+            $request->user()->update(['locale' => $data['locale']]);
+        }
 
         return back();
     }

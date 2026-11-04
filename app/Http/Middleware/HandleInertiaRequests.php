@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'auth' => [
-                'user' => $request->user()?->only('id', 'first_name', 'last_name', 'onboarding_step', 'is_admin'),
+                'user' => $request->user()?->only('id', 'first_name', 'last_name', 'onboarding_step', 'is_admin', 'is_demo'),
             ],
         ];
     }

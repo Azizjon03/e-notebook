@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            // Kirish faqat Telegram orqali: parol va email yo'q.
+            // Kirish Telegram orqali; telefon va parol 001300 migratsiyada qo'shilgan.
             $table->unsignedBigInteger('telegram_id')->unique();
             $table->string('telegram_username')->nullable();
             $table->string('first_name');

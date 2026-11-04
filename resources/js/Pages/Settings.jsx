@@ -1,6 +1,7 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import LanguageSwitcher from '../Components/LanguageSwitcher';
+import PhoneInput, { formatPhone } from '../Components/PhoneInput';
 import { t, tk } from '../lib/i18n';
 
 const DAYS = [
@@ -36,7 +37,49 @@ function Switch({ checked, onChange }) {
     );
 }
 
-export default function Settings({ settings, regions }) {
+function LoginCard({ login }) {
+    const form = useForm({ phone: login.phone ? formatPhone(login.phone) : '+998', current_password: '', password: '', password_confirmation: '' });
+    const { data, setData, errors } = form;
+    const input = 'mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm font-normal';
+
+    return (
+        <form
+            className={`mt-4 ${box}`}
+            onSubmit={(e) => {
+                e.preventDefault();
+                form.put('/settings/login', { preserveScroll: true, onSuccess: () => form.reset('current_password', 'password', 'password_confirmation') });
+            }}
+        >
+            <h2 className="font-bold text-ink">{t('Telefon va parol bilan kirish')}</h2>
+            {!login.has_password && <p className="text-xs text-muted">{t("Parol o'rnatsangiz, ilovaga Telegramsiz ham kira olasiz.")}</p>}
+            <label className="block text-sm font-semibold text-ink">
+                {t('Telefon raqam')}
+                <PhoneInput value={data.phone} onChange={(v) => setData('phone', v)} className={input} />
+            </label>
+            {login.has_password && (
+                <label className="block text-sm font-semibold text-ink">
+                    {t('Hozirgi parol')}
+                    <input type="password" autoComplete="current-password" value={data.current_password} onChange={(e) => setData('current_password', e.target.value)} className={input} />
+                </label>
+            )}
+            <label className="block text-sm font-semibold text-ink">
+                {login.has_password ? t('Yangi parol (ixtiyoriy)') : t('Parol')}
+                <input type="password" autoComplete="new-password" value={data.password} onChange={(e) => setData('password', e.target.value)} className={input} />
+                <span className="mt-1 block text-xs font-normal text-muted">{t('Kamida 8 belgi')}</span>
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+                {t('Parolni takrorlang')}
+                <input type="password" autoComplete="new-password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} className={input} />
+            </label>
+            {Object.values(errors).length > 0 && <p className="text-sm font-semibold text-red">{Object.values(errors)[0]}</p>}
+            <button className="w-full rounded-xl bg-g700 py-2.5 text-sm font-bold text-white" disabled={form.processing}>
+                {t('Saqlash')}
+            </button>
+        </form>
+    );
+}
+
+export default function Settings({ settings, regions, login }) {
     const { flash } = usePage().props;
     const form = useForm(settings);
     const { data, setData } = form;
@@ -51,6 +94,8 @@ export default function Settings({ settings, regions }) {
                 <h2 className="font-bold text-ink">{t('Til')}</h2>
                 <LanguageSwitcher className="mt-3" />
             </section>
+
+            <LoginCard login={login} />
 
             <form
                 className="mt-4 space-y-4"
@@ -163,6 +208,10 @@ export default function Settings({ settings, regions }) {
                     {t("Saqlash")}
                 </button>
             </form>
+
+            <button type="button" onClick={() => router.post('/logout')} className="mt-4 w-full rounded-xl py-3 font-bold text-red ring-1 ring-line">
+                {t('Chiqish')}
+            </button>
         </AppLayout>
     );
 }
