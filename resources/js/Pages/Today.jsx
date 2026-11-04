@@ -1,12 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import AddTaskForm from '../Components/AddTaskForm';
+import HabitList from '../Components/HabitList';
 import PrayerTimes from '../Components/PrayerTimes';
 import TaskItem from '../Components/TaskItem';
 import { addDays, formatLong } from '../lib/dates';
 
-export default function Today({ date, today, tasks, stats, overdue, prayers, now }) {
+export default function Today({ date, today, tasks, stats, overdue, prayers, habits, now }) {
     const isToday = date === today;
+    const canMark = date <= today;
     const percent = stats.total ? Math.round((stats.done / stats.total) * 100) : 0;
     const title = isToday ? 'Bugun' : date === addDays(today, 1) ? 'Ertaga' : date === addDays(today, -1) ? 'Kecha' : formatLong(date);
 
@@ -47,7 +49,7 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, now
                 </Link>
             )}
 
-            <PrayerTimes prayers={prayers} now={now} isToday={isToday} />
+            <PrayerTimes prayers={prayers} habits={habits} date={date} now={now} isToday={isToday} canMark={canMark} />
 
             {overdue > 0 && (
                 <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-gold/30">
@@ -77,6 +79,8 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, now
             ) : (
                 <p className="mt-8 text-center text-muted">Bu kunga hali vazifa yo'q.</p>
             )}
+
+            <HabitList habits={habits} date={date} canMark={canMark} />
         </AppLayout>
     );
 }

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Modules\Geo\Region;
+use App\Modules\Routine\Habit;
 use Database\Seeders\RegionSeeder;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -84,7 +85,8 @@ it('runs the whole onboarding with a shared location', function () {
     sendUpdate(tgCallback('gender:female'));
     $user->refresh();
     expect($user->gender)->toBe('female')
-        ->and($user->hasFinishedOnboarding())->toBeTrue();
+        ->and($user->hasFinishedOnboarding())->toBeTrue()
+        ->and(Habit::withoutGlobalScope('owner')->where('user_id', $user->id)->count())->toBe(7);
 
     Http::assertSent(fn (Request $r) => str_ends_with($r->url(), '/sendMessage')
         && ($r['reply_markup']['inline_keyboard'][0][0]['web_app']['url'] ?? null) === 'https://enotebook.test/login');

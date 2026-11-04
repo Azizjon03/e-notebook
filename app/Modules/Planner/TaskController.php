@@ -2,6 +2,9 @@
 
 namespace App\Modules\Planner;
 
+use App\Modules\Routine\DailyEntry;
+use App\Modules\Routine\Habit;
+use App\Modules\Routine\HabitDefaults;
 use App\Modules\Routine\PrayerTime;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
@@ -34,8 +37,24 @@ class TaskController
             'stats' => ['done' => $tasks->whereNotNull('done_at')->count(), 'total' => $tasks->count()],
             'overdue' => $overdue,
             'prayers' => $this->prayers($request, $date),
+            'habits' => $this->habits($request, $day),
             'now' => CarbonImmutable::now($tz)->format('H:i'),
         ]);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function habits(Request $request, CarbonImmutable $day): array
+    {
+        HabitDefaults::ensure($request->user());
+
+        $habits = Habit::with('area')->where('is_active', true)->orderBy('sort')->orderBy('id')->get()
+            ->filter(fn (Habit $h) => $h->isScheduledOn($day));
+        $entries = DailyEntry::whereIn('habit_id', $habits->pluck('id'))->whereDate('date', $day->toDateString())
+            ->get()->keyBy('habit_id');
+
+        return $habits->map(fn (Habit $h) => $h->toCard($entries->get($h->id)))->values()->all();
     }
 
     /**

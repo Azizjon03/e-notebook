@@ -4,6 +4,7 @@ namespace App\Modules\Onboarding;
 
 use App\Models\User;
 use App\Modules\Geo\Region;
+use App\Modules\Routine\HabitDefaults;
 use App\Modules\Telegram\BotTexts;
 use App\Modules\Telegram\TelegramClient;
 
@@ -208,6 +209,7 @@ class OnboardingFlow
 
         if ($kind === 'gender' && $user->onboarding_step === 'gender' && in_array($value, ['male', 'female'], true)) {
             $user->update(['gender' => $value, 'onboarding_step' => User::ONBOARDING_DONE]);
+            HabitDefaults::ensure($user);
             $this->sendAppButton($chatId, $user, welcome: true);
         }
     }

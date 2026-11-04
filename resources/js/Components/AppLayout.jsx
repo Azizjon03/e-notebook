@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 const TABS = [
     { href: '/', label: 'Bugun', match: (url) => url === '/' || url.startsWith('/?') },
     { href: '/calendar', label: 'Kalendar', match: (url) => url.startsWith('/calendar') },
+    { href: '/habits', label: 'Odatlar', match: (url) => url.startsWith('/habits') },
 ];
 
 export default function AppLayout({ children }) {
