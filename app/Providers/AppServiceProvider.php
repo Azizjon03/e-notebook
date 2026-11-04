@@ -6,6 +6,8 @@ use App\Modules\Routine\AladhanSource;
 use App\Modules\Routine\PrayerTimeSource;
 use App\Modules\Telegram\Auth\InitDataValidator;
 use App\Modules\Telegram\TelegramClient;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        RateLimiter::for('telegram', fn () => Limit::perSecond(25));
     }
 }

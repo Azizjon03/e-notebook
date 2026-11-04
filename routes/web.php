@@ -2,6 +2,7 @@
 
 use App\Modules\Admin\AdminController;
 use App\Modules\Admin\EnsureAdmin;
+use App\Modules\Core\SettingsController;
 use App\Modules\Ilm\BookController;
 use App\Modules\Planner\CalendarController;
 use App\Modules\Planner\TaskController;
@@ -29,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/habits/{habit}', [HabitController::class, 'update'])->name('habits.update');
     Route::delete('/habits/{habit}', [HabitController::class, 'destroy'])->name('habits.destroy');
     Route::post('/habits/{habit}/entry', [HabitController::class, 'entry'])->name('habits.entry');
+
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
     Route::get('/books', [BookController::class, 'index'])->name('books');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');

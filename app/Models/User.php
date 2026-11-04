@@ -32,6 +32,14 @@ class User extends Authenticatable
         'timezone',
         'onboarding_step',
         'is_admin',
+        'planning_mode',
+        'planning_time',
+        'weekly_planning_day',
+        'weekly_planning_time',
+        'prayer_reminders',
+        'prayer_remind_before',
+        'task_reminders',
+        'task_remind_before',
     ];
 
     /**
@@ -51,6 +59,9 @@ class User extends Authenticatable
             'latitude' => 'float',
             'longitude' => 'float',
             'is_admin' => 'boolean',
+            'prayer_reminders' => 'boolean',
+            'task_reminders' => 'boolean',
+            'weekly_planning_day' => 'integer',
         ];
     }
 
