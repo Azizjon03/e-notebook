@@ -125,3 +125,14 @@ sudo -u enotebook php artisan user:make-admin <telegram_id>
 
 Keyin ilovada "Admin" tugmasi chiqadi: `/admin` da statistika, `/admin/bot` da webhook holati,
 bot profili, buyruqlar va bot xabarlari matnlari. Bot tokeni u yerdan kiritilmaydi, faqat `.env` da.
+
+## 10. Zaxira
+
+`backup:database` har kuni 04:00 da `storage/app/backups` ga `pg_dump` zaxirasini yozadi va 14 kundan eskilarini o'chiradi.
+Serverda `postgresql-client` (pg_dump) o'rnatilgan bo'lishi kerak. Zaxiralarni vaqti-vaqti bilan serverdan tashqariga ham ko'chiring.
+
+Tiklash:
+
+```bash
+pg_restore --clean --no-owner -d enotebook storage/app/backups/<fayl>.dump
+```

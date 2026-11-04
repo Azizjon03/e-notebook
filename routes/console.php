@@ -13,3 +13,6 @@ Schedule::command('reminders:dispatch')->everyMinute()->withoutOverlapping();
 
 // Eski eslatma loglari (30 kundan eski) tozalanadi.
 Schedule::call(fn () => DB::table('reminder_logs')->where('sent_at', '<', now()->subDays(30))->delete())->daily();
+
+// Kunlik baza zaxirasi (14 kun saqlanadi).
+Schedule::command('backup:database')->dailyAt('04:00')->timezone('Asia/Tashkent');

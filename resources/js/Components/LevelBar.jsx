@@ -1,4 +1,4 @@
-export default function LevelBar({ level, pointsToday }) {
+export default function LevelBar({ level, pointsToday = 0 }) {
     const percent = Math.round((level.into / level.needed) * 100);
     return (
         <section className="flex items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">

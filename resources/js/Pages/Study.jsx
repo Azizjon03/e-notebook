@@ -1,4 +1,4 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AppLayout from '../Components/AppLayout';
 import LevelBar from '../Components/LevelBar';
@@ -108,7 +108,12 @@ export default function Study({ running, today, week, level, pointsToday, recent
             <div className="mt-4">{running ? <Timer running={running} /> : <StartForm areas={areas} />}</div>
 
             <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
-                <h2 className="mb-3 font-bold text-ink">Oxirgi 7 kun</h2>
+                <div className="mb-3 flex items-baseline justify-between">
+                    <h2 className="font-bold text-ink">Oxirgi 7 kun</h2>
+                    <Link href="/stats" className="text-sm font-semibold text-g700">
+                        To'liq statistika
+                    </Link>
+                </div>
                 <div className="flex h-28 items-end gap-2">
                     {week.map((d) => (
                         <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
