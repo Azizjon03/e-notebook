@@ -2,6 +2,7 @@ import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { haptic } from '../telegram/webapp';
 import { t } from '../lib/i18n';
+import NumberInput from './NumberInput';
 
 function CountHabit({ habit, date, canMark }) {
     const [value, setValue] = useState(habit.value ?? '');
@@ -27,12 +28,9 @@ function CountHabit({ habit, date, canMark }) {
             </div>
             {canMark && (
                 <form onSubmit={save} className="mt-2 flex gap-2">
-                    <input
-                        type="number"
-                        inputMode="numeric"
-                        min="0"
+                    <NumberInput
                         value={value}
-                        onChange={(e) => setValue(e.target.value)}
+                        onChange={setValue}
                         className="min-w-0 flex-1 rounded-lg border border-line bg-white px-2 py-1.5 text-sm"
                         placeholder={habit.kind === 'duration' ? t('Daqiqa') : t('Soni')}
                     />

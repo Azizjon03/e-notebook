@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import { t, tk } from '../lib/i18n';
+import NumberInput from '../Components/NumberInput';
 
 const DAYS = [
     [1, tk('Du')],
@@ -37,6 +39,7 @@ function DayPicker({ value, onChange }) {
 }
 
 function HabitRow({ habit }) {
+    const [target, setTarget] = useState(String(habit.target ?? ''));
     return (
         <li className={`rounded-2xl bg-white p-4 ring-1 ring-line ${habit.is_active ? '' : 'opacity-60'}`}>
             <div className="flex items-center gap-3">
@@ -64,11 +67,10 @@ function HabitRow({ habit }) {
                     {habit.kind !== 'check' && (
                         <label className="flex items-center gap-2">
                             <span className="w-16 text-muted">{t("Maqsad")}</span>
-                            <input
-                                type="number"
-                                min="1"
-                                defaultValue={habit.target}
-                                onBlur={(e) => Number(e.target.value) !== habit.target && patch(habit, { target: Number(e.target.value) })}
+                            <NumberInput
+                                value={target}
+                                onChange={setTarget}
+                                onBlur={() => Number(target) > 0 && Number(target) !== habit.target && patch(habit, { target: Number(target) })}
                                 className="w-28 rounded-lg border border-line px-2 py-1"
                             />
                             {habit.kind === 'duration' && <span className="text-muted">{t("daqiqa")}</span>}
@@ -134,11 +136,9 @@ function AddHabit({ areas }) {
                 </select>
             </div>
             {form.data.kind !== 'check' && (
-                <input
-                    type="number"
-                    min="1"
+                <NumberInput
                     value={form.data.target}
-                    onChange={(e) => form.setData('target', e.target.value)}
+                    onChange={(v) => form.setData('target', v)}
                     placeholder={form.data.kind === 'duration' ? t('Maqsad, daqiqa') : t('Maqsad, soni')}
                     className="w-full rounded-lg border border-line px-2 py-2"
                 />

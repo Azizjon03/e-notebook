@@ -3,6 +3,7 @@ import { useState } from 'react';
 import AppLayout from '../Components/AppLayout';
 import { formatShort } from '../lib/dates';
 import { t, tk } from '../lib/i18n';
+import NumberInput from '../Components/NumberInput';
 
 const SECTIONS = [
     ['reading', tk("O'qilmoqda")],
@@ -21,14 +22,12 @@ function LogForm({ book, onDone }) {
             className="mt-3 space-y-2 border-t border-line pt-3 text-sm"
         >
             <div className="flex gap-2">
-                <input
-                    type="number"
-                    inputMode="numeric"
+                <NumberInput
                     autoFocus
-                    min={book.current_page + 1}
                     max={book.total_pages ?? undefined}
+                    maxLength={5}
                     value={form.data.to_page}
-                    onChange={(e) => form.setData('to_page', e.target.value)}
+                    onChange={(v) => form.setData('to_page', v)}
                     placeholder={`Qaysi sahifagacha? (hozir ${book.current_page})`}
                     className="min-w-0 flex-1 rounded-lg border border-line px-2 py-2"
                 />
@@ -137,7 +136,7 @@ function AddBook({ areas }) {
             <input className={field} placeholder={t("Muallif")} value={form.data.author} onChange={(e) => form.setData('author', e.target.value)} maxLength={150} />
             <div className="flex gap-2">
                 <input className={field} placeholder={t("Bosqich (ixtiyoriy)")} value={form.data.stage} onChange={(e) => form.setData('stage', e.target.value)} maxLength={100} />
-                <input className={`${field} w-28`} type="number" min="1" placeholder={t("Betlar")} value={form.data.total_pages} onChange={(e) => form.setData('total_pages', e.target.value)} />
+                <NumberInput className={`${field} w-28`} maxLength={5} placeholder={t("Betlar")} value={form.data.total_pages} onChange={(v) => form.setData('total_pages', v)} />
             </div>
             <select className={`${field} bg-white`} value={form.data.area} onChange={(e) => form.setData('area', e.target.value)}>
                 {areas.map((a) => (
