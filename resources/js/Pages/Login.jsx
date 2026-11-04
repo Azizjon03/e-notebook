@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import LanguageSwitcher from '../Components/LanguageSwitcher';
+import HeaderControls from '../Components/HeaderControls';
 import PhoneInput from '../Components/PhoneInput';
 import { isMiniApp, webApp } from '../telegram/webapp';
 import { t } from '../lib/i18n';
@@ -26,7 +26,8 @@ export default function Login({ devLogin = false }) {
     return (
         <div className="mx-auto grid min-h-screen max-w-md place-items-center px-4">
             <Head title={t("Kirish")} />
-            <div className="w-full rounded-2xl bg-card p-6 text-center shadow-sm ring-1 ring-line">
+            <div className="relative w-full rounded-2xl bg-card p-6 text-center shadow-sm ring-1 ring-line">
+                <HeaderControls className="absolute top-4 right-4" />
                 <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-g700 text-2xl font-extrabold text-white">
                     e
                 </span>
@@ -66,7 +67,6 @@ export default function Login({ devLogin = false }) {
                     </form>
                 )}
                 {errors?.init_data && <p className="mt-3 text-sm font-semibold text-red">{errors.init_data}</p>}
-                <LanguageSwitcher className="mt-5" />
                 {devLogin && !trying && (
                     <div className="mt-6 border-t border-line pt-4">
                         <p className="text-xs font-semibold uppercase tracking-wide text-muted">{t("Faqat kompyuterda sinash uchun")}</p>
