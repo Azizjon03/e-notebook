@@ -8,6 +8,7 @@ use App\Modules\Ilm\BookController;
 use App\Modules\Planner\CalendarController;
 use App\Modules\Planner\TaskController;
 use App\Modules\Routine\HabitController;
+use App\Modules\Sport\GymController;
 use App\Modules\Study\StudyController;
 use App\Modules\Telegram\Auth\WebAppLoginController;
 use App\Modules\Telegram\Webhook\WebhookController;
@@ -31,6 +32,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/habits/{habit}', [HabitController::class, 'update'])->name('habits.update');
     Route::delete('/habits/{habit}', [HabitController::class, 'destroy'])->name('habits.destroy');
     Route::post('/habits/{habit}/entry', [HabitController::class, 'entry'])->name('habits.entry');
+
+    Route::get('/gym', [GymController::class, 'index'])->name('gym');
+    Route::post('/gym/gender', [GymController::class, 'gender'])->name('gym.gender');
+    Route::post('/gym/program', [GymController::class, 'program'])->name('gym.program');
+    Route::post('/gym/set', [GymController::class, 'set'])->name('gym.set');
+    Route::post('/gym/finish', [GymController::class, 'finish'])->name('gym.finish');
 
     Route::get('/stats', StatsController::class)->name('stats');
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');

@@ -41,6 +41,8 @@ class User extends Authenticatable
         'task_reminders',
         'task_remind_before',
         'day_summary',
+        'gym_program',
+        'gym_day_index',
     ];
 
     /**
