@@ -2,6 +2,7 @@
 
 use App\Modules\Admin\AdminController;
 use App\Modules\Admin\EnsureAdmin;
+use App\Modules\Core\Dev\DevLoginController;
 use App\Modules\Core\SettingsController;
 use App\Modules\Core\StatsController;
 use App\Modules\Ilm\BookController;
@@ -17,10 +18,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', fn () => Inertia::render('Login'))->name('login');
+    Route::get('/login', fn () => Inertia::render('Login', ['devLogin' => DevLoginController::enabled()]))->name('login');
     Route::post('/auth/telegram/webapp', WebAppLoginController::class)
         ->middleware('throttle:20,1')
         ->name('auth.telegram.webapp');
+
+    if (DevLoginController::enabled()) {
+        Route::post('/auth/dev', DevLoginController::class)->name('auth.dev');
+    }
 });
 
 Route::middleware('auth')->group(function () {

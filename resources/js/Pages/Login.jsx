@@ -2,7 +2,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { isMiniApp, webApp } from '../telegram/webapp';
 
-export default function Login() {
+export default function Login({ devLogin = false }) {
     const { errors } = usePage().props;
     const [trying, setTrying] = useState(false);
 
@@ -33,6 +33,19 @@ export default function Login() {
                     </p>
                 )}
                 {errors?.init_data && <p className="mt-3 text-sm font-semibold text-red">{errors.init_data}</p>}
+                {devLogin && !trying && (
+                    <div className="mt-6 border-t border-line pt-4">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Faqat kompyuterda sinash uchun</p>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                            <button type="button" onClick={() => router.post('/auth/dev', { gender: 'male' })} className="rounded-xl bg-g700 py-2.5 text-sm font-bold text-white">
+                                Erkak sifatida
+                            </button>
+                            <button type="button" onClick={() => router.post('/auth/dev', { gender: 'female' })} className="rounded-xl bg-g700 py-2.5 text-sm font-bold text-white">
+                                Ayol sifatida
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

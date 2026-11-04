@@ -28,6 +28,9 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    // Kompyuterda Telegramsiz kirish (faqat APP_ENV=local bilan ishlaydi).
+    'dev_login' => (bool) env('DEV_LOGIN', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
