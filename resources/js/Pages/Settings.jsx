@@ -1,6 +1,7 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import LanguageSwitcher from '../Components/LanguageSwitcher';
+import ThemeSwitcher from '../Components/ThemeSwitcher';
 import PhoneInput, { formatPhone } from '../Components/PhoneInput';
 import { t, tk } from '../lib/i18n';
 
@@ -14,8 +15,8 @@ const DAYS = [
     [7, tk('Yakshanba')],
 ];
 
-const box = 'rounded-2xl bg-white p-4 ring-1 ring-line space-y-3';
-const select = 'rounded-lg border border-line bg-white px-2 py-2 text-sm';
+const box = 'rounded-2xl bg-card p-4 ring-1 ring-line space-y-3';
+const select = 'rounded-lg border border-line bg-card px-2 py-2 text-sm';
 
 function Row({ label, hint, children }) {
     return (
@@ -93,6 +94,8 @@ export default function Settings({ settings, regions, login }) {
             <section className={`mt-4 ${box}`}>
                 <h2 className="font-bold text-ink">{t('Til')}</h2>
                 <LanguageSwitcher className="mt-3" />
+                <h2 className="pt-2 font-bold text-ink">{t('Mavzu')}</h2>
+                <ThemeSwitcher />
             </section>
 
             <LoginCard login={login} />
@@ -118,7 +121,7 @@ export default function Settings({ settings, regions, login }) {
                                 onClick={() => {
                                     setData((d) => ({ ...d, planning_mode: value, planning_time: value === 'morning' && d.planning_mode !== 'morning' ? '08:00' : value === 'evening' && d.planning_mode !== 'evening' ? '22:00' : d.planning_time }));
                                 }}
-                                className={`rounded-lg py-2 ${data.planning_mode === value ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`}
+                                className={`rounded-lg py-2 ${data.planning_mode === value ? 'bg-card text-g800 shadow-sm' : 'text-muted'}`}
                             >
                                 {t(label)}
                             </button>

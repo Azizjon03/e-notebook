@@ -3,10 +3,13 @@ import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import { initTelegram } from './telegram/webapp';
 import { setI18n } from './lib/i18n';
+import { applyTheme, watchSystemTheme } from './lib/theme';
 
 const appName = import.meta.env.VITE_APP_NAME || 'e-notebook';
 
 initTelegram();
+applyTheme();
+watchSystemTheme();
 
 createInertiaApp({
     title: (title) => (title ? `${title} · ${appName}` : appName),

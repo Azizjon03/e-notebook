@@ -13,7 +13,7 @@ export default function LanguageSwitcher({ className = '' }) {
                     lang={code}
                     aria-pressed={code === locale}
                     onClick={() => code !== locale && router.post('/locale', { locale: code }, { preserveScroll: true })}
-                    className={`rounded-lg py-2 ${code === locale ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`}
+                    className={`rounded-lg py-2 ${code === locale ? 'bg-card text-g800 shadow-sm' : 'text-muted'}`}
                 >
                     {name}
                 </button>

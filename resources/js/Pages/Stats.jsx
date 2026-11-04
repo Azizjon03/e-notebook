@@ -6,7 +6,7 @@ import { t } from '../lib/i18n';
 
 function Tile({ label, value, hint }) {
     return (
-        <div className="rounded-2xl bg-white p-4 ring-1 ring-line">
+        <div className="rounded-2xl bg-card p-4 ring-1 ring-line">
             <p className="text-xs font-semibold text-muted">{label}</p>
             <p className="mt-1 text-2xl font-extrabold text-ink">{value}</p>
             {hint && <p className="text-xs text-muted">{hint}</p>}
@@ -17,7 +17,7 @@ function Tile({ label, value, hint }) {
 function Bars({ title, days, value, max, unit, color = 'bg-g500', range }) {
     const top = Math.max(max ?? 0, ...days.map(value), 1);
     return (
-        <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+        <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
             <h2 className="mb-3 font-bold text-ink">{title}</h2>
             <div className="flex h-32 items-end gap-[3px]">
                 {days.map((d) => {
@@ -41,7 +41,7 @@ function Bars({ title, days, value, max, unit, color = 'bg-g500', range }) {
 }
 
 export default function Stats({ range, days, summary, habits, level }) {
-    const tab = (r) => `flex-1 rounded-lg py-1.5 text-center text-sm font-bold ${range === r ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`;
+    const tab = (r) => `flex-1 rounded-lg py-1.5 text-center text-sm font-bold ${range === r ? 'bg-card text-g800 shadow-sm' : 'text-muted'}`;
 
     return (
         <AppLayout>
@@ -73,7 +73,7 @@ export default function Stats({ range, days, summary, habits, level }) {
             <Bars title={t("Ball")} days={days} value={(d) => d.points} unit={t("ball")} color="bg-gold" range={range} />
 
             {habits.length > 0 && (
-                <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+                <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
                     <h2 className="mb-3 font-bold text-ink">{t("Odatlar")}</h2>
                     <ul className="space-y-3">
                         {habits.map((h) => {

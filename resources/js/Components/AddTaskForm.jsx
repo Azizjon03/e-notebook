@@ -53,7 +53,7 @@ export default function AddTaskForm({ date }) {
     const error = errors.title || errors.end_time || errors.start_time || errors.weekdays || errors.until;
 
     return (
-        <form onSubmit={submit} className="rounded-2xl bg-white p-4 ring-1 ring-line">
+        <form onSubmit={submit} className="rounded-2xl bg-card p-4 ring-1 ring-line">
             <div className="flex gap-2">
                 <input
                     value={data.title}
@@ -94,7 +94,7 @@ export default function AddTaskForm({ date }) {
                         <select
                             value={data.repeat}
                             onChange={(e) => setData('repeat', e.target.value)}
-                            className="rounded-lg border border-line bg-white px-2 py-1.5"
+                            className="rounded-lg border border-line bg-card px-2 py-1.5"
                         >
                             {REPEAT.map(([value, label]) => (
                                 <option key={value} value={value}>

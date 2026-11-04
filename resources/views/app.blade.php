@@ -3,6 +3,15 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <script>
+            // Mavzuni sahifa chizilishidan oldin qo'yamiz, oq "miltillash" bo'lmasin.
+            (function () {
+                var theme = 'system';
+                try { theme = localStorage.getItem('theme') || 'system'; } catch (e) {}
+                var dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', dark);
+            })();
+        </script>
         <title inertia>{{ config('app.name', 'e-notebook') }}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

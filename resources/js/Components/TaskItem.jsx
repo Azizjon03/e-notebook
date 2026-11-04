@@ -12,13 +12,13 @@ export default function TaskItem({ task }) {
     };
 
     return (
-        <li className="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">
+        <li className="flex items-start gap-3 rounded-2xl bg-card p-4 ring-1 ring-line">
             <button
                 type="button"
                 onClick={toggle}
                 aria-label={task.done ? t('Bajarilmagan deb belgilash') : t('Bajarildi deb belgilash')}
                 className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition ${
-                    task.done ? 'border-g700 bg-g700 text-white' : 'border-line bg-white hover:border-g500'
+                    task.done ? 'border-g700 bg-g700 text-white' : 'border-line bg-card hover:border-g500'
                 }`}
             >
                 {task.done && (
