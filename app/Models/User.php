@@ -40,6 +40,7 @@ class User extends Authenticatable
         'prayer_remind_before',
         'task_reminders',
         'task_remind_before',
+        'day_summary',
     ];
 
     /**
@@ -61,6 +62,7 @@ class User extends Authenticatable
             'is_admin' => 'boolean',
             'prayer_reminders' => 'boolean',
             'task_reminders' => 'boolean',
+            'day_summary' => 'boolean',
             'weekly_planning_day' => 'integer',
         ];
     }

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Planner\Task;
 use App\Modules\Routine\Habit;
 use App\Modules\Routine\PrayerTime;
+use App\Modules\Telegram\Summaries;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,11 @@ class ReminderPlanner
     public const WINDOW = 5;
 
     public const RETRY_AFTER = 30;
+
+    /** Kun yakuni xabari vaqti (foydalanuvchi vaqti bilan). */
+    public const DAY_SUMMARY_AT = '21:30';
+
+    public function __construct(private readonly Summaries $summaries) {}
 
     /**
      * @return list<Reminder>
@@ -36,6 +42,7 @@ class ReminderPlanner
             ...$this->tasks($user, $now),
             ...$this->planning($user, $now, $sent->all()),
             ...$this->weekly($user, $now),
+            ...$this->daySummary($user, $now),
         ];
 
         return array_values(array_filter($due, fn (Reminder $r) => ! $sent->has($r->ref)));
@@ -167,6 +174,25 @@ class ReminderPlanner
             'Haftalik reja vaqti: kelasi hafta uchun asosiy maqsadlar va vazifalarni belgilang.',
             $this->button('Haftani rejalashtirish', '/calendar?view=week&date='.$nextMonday),
         )];
+    }
+
+    /**
+     * @return list<Reminder>
+     */
+    private function daySummary(User $user, CarbonImmutable $now): array
+    {
+        if (! $user->day_summary) {
+            return [];
+        }
+
+        $at = CarbonImmutable::parse($now->toDateString().' '.self::DAY_SUMMARY_AT, $user->timezone);
+        if (! $this->isDue($now, $at)) {
+            return [];
+        }
+
+        $text = $this->summaries->daySummary($user, $now);
+
+        return $text ? [new Reminder('summary:'.$now->toDateString(), $text, $this->button('Natijalar', '/study'))] : [];
     }
 
     /**

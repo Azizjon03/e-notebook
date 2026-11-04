@@ -140,6 +140,7 @@ it('saves reminder settings', function () {
         'weekly_planning_day' => null, 'weekly_planning_time' => '20:00',
         'prayer_reminders' => true, 'prayer_remind_before' => 15,
         'task_reminders' => false, 'task_remind_before' => 15,
+        'day_summary' => false,
         'region_id' => Region::firstWhere('name', 'Buxoro viloyati')->id,
     ])->assertSessionHas('success');
 

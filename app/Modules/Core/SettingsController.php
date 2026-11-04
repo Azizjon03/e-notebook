@@ -11,7 +11,7 @@ use Inertia\Response;
 
 class SettingsController
 {
-    private const FIELDS = ['planning_mode', 'planning_time', 'weekly_planning_day', 'weekly_planning_time', 'prayer_reminders', 'prayer_remind_before', 'task_reminders', 'task_remind_before', 'region_id'];
+    private const FIELDS = ['planning_mode', 'planning_time', 'weekly_planning_day', 'weekly_planning_time', 'prayer_reminders', 'prayer_remind_before', 'task_reminders', 'task_remind_before', 'day_summary', 'region_id'];
 
     public function edit(Request $request): Response
     {
@@ -33,6 +33,7 @@ class SettingsController
             'prayer_remind_before' => ['required', 'integer', Rule::in([0, 5, 10, 15, 20, 30])],
             'task_reminders' => ['required', 'boolean'],
             'task_remind_before' => ['required', 'integer', Rule::in([0, 5, 10, 15, 30, 60])],
+            'day_summary' => ['required', 'boolean'],
             'region_id' => ['required', Rule::exists('regions', 'id')->whereNull('parent_id')],
         ]);
 

@@ -6,7 +6,9 @@ use App\Models\User;
 use App\Modules\Geo\Region;
 use App\Modules\Routine\HabitDefaults;
 use App\Modules\Telegram\BotTexts;
+use App\Modules\Telegram\Summaries;
 use App\Modules\Telegram\TelegramClient;
+use Carbon\CarbonImmutable;
 
 /**
  * /start dan boshlanadigan ro'yxatdan o'tish oqimi.
@@ -19,6 +21,7 @@ class OnboardingFlow
     public function __construct(
         private readonly TelegramClient $telegram,
         private readonly BotTexts $texts,
+        private readonly Summaries $summaries,
     ) {}
 
     /**
@@ -58,7 +61,7 @@ class OnboardingFlow
             'name' => $this->saveName($chatId, $user, $text),
             'location' => $this->saveLocation($chatId, $user, $message),
             'gender' => $this->askGender($chatId),
-            default => $this->sendAppButton($chatId, $user),
+            default => $this->command($chatId, $user, $text),
         };
     }
 
@@ -212,6 +215,32 @@ class OnboardingFlow
             HabitDefaults::ensure($user);
             $this->sendAppButton($chatId, $user, welcome: true);
         }
+    }
+
+    /**
+     * Ro'yxatdan o'tgan foydalanuvchi buyruqlari: /bugun, /hafta.
+     */
+    private function command(int $chatId, User $user, string $text): void
+    {
+        $now = CarbonImmutable::now($user->timezone);
+        $command = strtolower(strtok($text, ' @') ?: '');
+
+        match ($command) {
+            '/bugun' => $this->telegram->sendMessage($chatId, $this->summaries->today($user, $now), $this->appMarkup('Bugungi reja', '/')),
+            '/ertaga' => $this->telegram->sendMessage($chatId, $this->summaries->today($user, $now->addDay()), $this->appMarkup('Ertangi reja', '/?date='.$now->addDay()->toDateString())),
+            '/hafta' => $this->telegram->sendMessage($chatId, $this->summaries->week($user, $now), $this->appMarkup('Kalendar', '/calendar?view=week')),
+            default => $this->sendAppButton($chatId, $user),
+        };
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function appMarkup(string $label, string $path): array
+    {
+        return ['inline_keyboard' => [[
+            ['text' => $label, 'web_app' => ['url' => rtrim((string) config('app.url'), '/').$path]],
+        ]]];
     }
 
     private function sendAppButton(int $chatId, User $user, bool $welcome = false): void

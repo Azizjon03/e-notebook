@@ -12,7 +12,8 @@ class BotAdmin
     public const DEFAULT_COMMANDS = [
         ['command' => 'start', 'description' => 'Boshlash va ilovani ochish'],
         ['command' => 'bugun', 'description' => 'Bugungi reja'],
-        ['command' => 'hafta', 'description' => 'Haftalik natija'],
+        ['command' => 'ertaga', 'description' => 'Ertangi reja'],
+        ['command' => 'hafta', 'description' => 'Oxirgi 7 kun natijasi'],
     ];
 
     public function __construct(

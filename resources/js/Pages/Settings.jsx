@@ -132,6 +132,9 @@ export default function Settings({ settings, regions }) {
                             </select>
                         </Row>
                     )}
+                    <Row label="Kun yakuni" hint="Har kuni 21:30 da qisqa xulosa">
+                        <Switch checked={data.day_summary} onChange={(v) => setData('day_summary', v)} />
+                    </Row>
                 </section>
 
                 <section className={box}>
