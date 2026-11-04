@@ -80,7 +80,7 @@ class TaskController
             'weekdays' => ['nullable', 'array', 'required_if:repeat,weekly'],
             'weekdays.*' => ['integer', 'between:1,7'],
             'until' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:date'],
-        ], ['weekdays.required_if' => 'Hafta kunlarini tanlang.']);
+        ], ['weekdays.required_if' => __('Hafta kunlarini tanlang.')]);
 
         if ($repeat['repeat'] ?? null) {
             Recurrence::create([
@@ -193,8 +193,8 @@ class TaskController
             'start_time' => ['nullable', 'date_format:H:i'],
             'end_time' => ['nullable', 'date_format:H:i', Rule::when($request->filled('start_time'), 'after:start_time')],
         ], [
-            'title.required' => 'Vazifa nomini yozing.',
-            'end_time.after' => 'Tugash vaqti boshlanishidan keyin bo\'lsin.',
+            'title.required' => __('Vazifa nomini yozing.'),
+            'end_time.after' => __("Tugash vaqti boshlanishidan keyin bo'lsin."),
         ]);
     }
 

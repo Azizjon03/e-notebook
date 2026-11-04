@@ -1,21 +1,22 @@
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { t, tk } from '../lib/i18n';
 
 const WEEKDAYS = [
-    [1, 'Du'],
-    [2, 'Se'],
-    [3, 'Cho'],
-    [4, 'Pa'],
-    [5, 'Ju'],
-    [6, 'Sha'],
-    [7, 'Ya'],
+    [1, tk('Du')],
+    [2, tk('Se')],
+    [3, tk('Cho')],
+    [4, tk('Pa')],
+    [5, tk('Ju')],
+    [6, tk('Sha')],
+    [7, tk('Ya')],
 ];
 
 const REPEAT = [
-    ['', 'Takrorlanmaydi'],
-    ['daily', 'Har kuni'],
-    ['weekly', 'Har hafta'],
-    ['monthly', 'Har oy'],
+    ['', tk('Takrorlanmaydi')],
+    ['daily', tk('Har kuni')],
+    ['weekly', tk('Har hafta')],
+    ['monthly', tk('Har oy')],
 ];
 
 export default function AddTaskForm({ date }) {
@@ -57,7 +58,7 @@ export default function AddTaskForm({ date }) {
                 <input
                     value={data.title}
                     onChange={(e) => setData('title', e.target.value)}
-                    placeholder="Yangi vazifa..."
+                    placeholder={t("Yangi vazifa...")}
                     maxLength={200}
                     className="min-w-0 flex-1 rounded-xl border border-line bg-bg px-3 py-2.5 text-ink outline-none focus:border-g500"
                 />
@@ -66,14 +67,14 @@ export default function AddTaskForm({ date }) {
                     disabled={processing || !data.title.trim()}
                     className="rounded-xl bg-g700 px-4 font-bold text-white disabled:opacity-40"
                 >
-                    Qo'shish
+                    {t("Qo'shish")}
                 </button>
             </div>
 
             {more ? (
                 <div className="mt-3 space-y-3 text-sm">
                     <div className="flex items-center gap-2">
-                        <span className="w-20 text-muted">Vaqt</span>
+                        <span className="w-20 text-muted">{t("Vaqt")}</span>
                         <input
                             type="time"
                             value={data.start_time}
@@ -89,7 +90,7 @@ export default function AddTaskForm({ date }) {
                         />
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-20 text-muted">Takror</span>
+                        <span className="w-20 text-muted">{t("Takror")}</span>
                         <select
                             value={data.repeat}
                             onChange={(e) => setData('repeat', e.target.value)}
@@ -97,7 +98,7 @@ export default function AddTaskForm({ date }) {
                         >
                             {REPEAT.map(([value, label]) => (
                                 <option key={value} value={value}>
-                                    {label}
+                                    {t(label)}
                                 </option>
                             ))}
                         </select>
@@ -113,14 +114,14 @@ export default function AddTaskForm({ date }) {
                                         data.weekdays.includes(day) ? 'bg-g700 text-white' : 'bg-bg text-muted ring-1 ring-line'
                                     }`}
                                 >
-                                    {label}
+                                    {t(label)}
                                 </button>
                             ))}
                         </div>
                     )}
                     {data.repeat && (
                         <div className="flex items-center gap-2">
-                            <span className="w-20 text-muted">Tugashi</span>
+                            <span className="w-20 text-muted">{t("Tugashi")}</span>
                             <input
                                 type="date"
                                 value={data.until}
@@ -128,13 +129,13 @@ export default function AddTaskForm({ date }) {
                                 onChange={(e) => setData('until', e.target.value)}
                                 className="rounded-lg border border-line px-2 py-1.5"
                             />
-                            <span className="text-xs text-muted">bo'sh = muddatsiz</span>
+                            <span className="text-xs text-muted">{t("bo'sh = muddatsiz")}</span>
                         </div>
                     )}
                 </div>
             ) : (
                 <button type="button" onClick={() => setMore(true)} className="mt-2 text-sm font-semibold text-g700">
-                    + Vaqt va takrorlash
+                    {t("+ Vaqt va takrorlash")}
                 </button>
             )}
 

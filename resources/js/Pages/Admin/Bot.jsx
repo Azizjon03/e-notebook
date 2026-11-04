@@ -1,4 +1,4 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import AdminLayout, { Card } from '../../Components/AdminLayout';
 
 const input = 'w-full rounded-xl border border-line bg-bg px-3 py-2 text-ink outline-none focus:border-g500';
@@ -166,11 +166,25 @@ function CommandsCard({ status, defaultCommands }) {
     );
 }
 
-function TextsCard({ texts, defaults, labels }) {
-    const form = useForm({ texts });
+const LANGS = { uz: "O'zbekcha", ru: 'Русский', en: 'English' };
+
+function TextsCard({ texts, defaults, labels, textLocale }) {
+    const form = useForm({ texts, locale: textLocale });
 
     return (
         <Card title="Bot xabarlari" className="md:col-span-2">
+            <div className="mb-3 flex gap-2">
+                {Object.entries(LANGS).map(([code, name]) => (
+                    <Link
+                        key={code}
+                        href={`/admin/bot?lang=${code}`}
+                        preserveScroll
+                        className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${code === textLocale ? 'bg-g700 text-white' : 'text-ink ring-1 ring-line'}`}
+                    >
+                        {name}
+                    </Link>
+                ))}
+            </div>
             <p className="mb-4 text-sm text-muted">
                 <code>{'{name}'}</code> o'rniga foydalanuvchi ismi qo'yiladi. HTML teglar: &lt;b&gt;, &lt;i&gt;. Bo'sh qoldirilsa standart matn ishlatiladi.
             </p>
@@ -211,7 +225,7 @@ function TextsCard({ texts, defaults, labels }) {
     );
 }
 
-export default function Bot({ status, secretConfigured, texts, defaults, labels, defaultCommands }) {
+export default function Bot({ status, secretConfigured, texts, defaults, labels, defaultCommands, textLocale }) {
     return (
         <AdminLayout title="Bot sozlamalari">
             <Head title="Bot sozlamalari" />
@@ -219,7 +233,7 @@ export default function Bot({ status, secretConfigured, texts, defaults, labels,
                 <StatusCard status={status} secretConfigured={secretConfigured} />
                 {status.configured && <ProfileCard status={status} />}
                 {status.configured && <CommandsCard status={status} defaultCommands={defaultCommands} />}
-                <TextsCard texts={texts} defaults={defaults} labels={labels} />
+                <TextsCard key={textLocale} texts={texts} defaults={defaults} labels={labels} textLocale={textLocale} />
             </div>
         </AdminLayout>
     );

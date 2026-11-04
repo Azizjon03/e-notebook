@@ -5,12 +5,13 @@ import HabitList from '../Components/HabitList';
 import PrayerTimes from '../Components/PrayerTimes';
 import TaskItem from '../Components/TaskItem';
 import { addDays, formatLong } from '../lib/dates';
+import { t } from '../lib/i18n';
 
 export default function Today({ date, today, tasks, stats, overdue, prayers, habits, now, level }) {
     const isToday = date === today;
     const canMark = date <= today;
     const percent = stats.total ? Math.round((stats.done / stats.total) * 100) : 0;
-    const title = isToday ? 'Bugun' : date === addDays(today, 1) ? 'Ertaga' : date === addDays(today, -1) ? 'Kecha' : formatLong(date);
+    const title = isToday ? t('Bugun') : date === addDays(today, 1) ? t('Ertaga') : date === addDays(today, -1) ? t('Kecha') : formatLong(date);
 
     return (
         <AppLayout>
@@ -18,7 +19,7 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
 
             <section className="rounded-2xl bg-g700 p-5 text-white">
                 <div className="flex items-center justify-between">
-                    <Link href={`/?date=${addDays(date, -1)}`} preserveScroll className="rounded-lg px-2 py-1 text-lg" aria-label="Oldingi kun">
+                    <Link href={`/?date=${addDays(date, -1)}`} preserveScroll className="rounded-lg px-2 py-1 text-lg" aria-label={t('Oldingi kun')}>
                         ‹
                     </Link>
                     <div className="text-center">
@@ -26,20 +27,18 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
                         <p className="text-sm text-white/80">{formatLong(date)}</p>
                         {level && (
                             <Link href="/study" className="mt-1 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-bold">
-                                {level.level}-daraja · {level.total} ball
+                                {t(':level-daraja · :total ball', { level: level.level, total: level.total })}
                             </Link>
                         )}
                     </div>
-                    <Link href={`/?date=${addDays(date, 1)}`} preserveScroll className="rounded-lg px-2 py-1 text-lg" aria-label="Keyingi kun">
+                    <Link href={`/?date=${addDays(date, 1)}`} preserveScroll className="rounded-lg px-2 py-1 text-lg" aria-label={t('Keyingi kun')}>
                         ›
                     </Link>
                 </div>
 
                 <div className="mt-4">
                     <div className="flex justify-between text-sm font-semibold">
-                        <span>
-                            {stats.done} / {stats.total} bajarildi
-                        </span>
+                        <span>{t(':done / :total bajarildi', { done: stats.done, total: stats.total })}</span>
                         <span>{percent}%</span>
                     </div>
                     <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/25">
@@ -50,7 +49,7 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
 
             {!isToday && (
                 <Link href="/" className="mt-3 block text-center text-sm font-semibold text-g700">
-                    Bugunga qaytish
+                    {t('Bugunga qaytish')}
                 </Link>
             )}
 
@@ -59,14 +58,14 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
             {overdue > 0 && (
                 <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-gold/30">
                     <p className="text-sm text-ink">
-                        O'tgan kunlardan <b>{overdue} ta</b> bajarilmagan vazifa qoldi.
+                        {t("O'tgan kunlardan :count ta bajarilmagan vazifa qoldi.", { count: overdue })}
                     </p>
                     <button
                         type="button"
                         onClick={() => router.post('/tasks/carry-over', {}, { preserveScroll: true })}
                         className="shrink-0 rounded-xl bg-gold px-3 py-2 text-sm font-bold text-white"
                     >
-                        Bugunga olish
+                        {t('Bugunga olish')}
                     </button>
                 </div>
             )}
@@ -82,7 +81,7 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
                     ))}
                 </ul>
             ) : (
-                <p className="mt-8 text-center text-muted">Bu kunga hali vazifa yo'q.</p>
+                <p className="mt-8 text-center text-muted">{t("Bu kunga hali vazifa yo'q.")}</p>
             )}
 
             <HabitList habits={habits} date={date} canMark={canMark} />

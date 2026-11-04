@@ -28,23 +28,23 @@ class Summaries
         $lines = ['<b>'.$this->dayTitle($day).'</b>', ''];
 
         if ($tasks->isEmpty()) {
-            $lines[] = "Bu kunga vazifa yo'q.";
+            $lines[] = __("Bu kunga vazifa yo'q.");
         } else {
-            $lines[] = 'Vazifalar: '.$tasks->whereNotNull('done_at')->count().'/'.$tasks->count();
+            $lines[] = __('Vazifalar').': '.$tasks->whereNotNull('done_at')->count().'/'.$tasks->count();
             foreach ($tasks->take(10) as $t) {
                 $time = $t->start_time ? substr($t->start_time, 0, 5).' ' : '';
                 $lines[] = ($t->done_at ? '✅ ' : '▫️ ').$time.e($t->title);
             }
             if ($tasks->count() > 10) {
-                $lines[] = '… yana '.($tasks->count() - 10).' ta';
+                $lines[] = __('… yana :count ta', ['count' => $tasks->count() - 10]);
             }
         }
 
         $prayer = $user->region_id ? PrayerTime::where('region_id', $user->region_id)->whereDate('date', $date)->first() : null;
         if ($prayer) {
             $lines[] = '';
-            $lines[] = 'Namoz: '.collect(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'])
-                ->map(fn ($k) => PrayerTime::NAMES[$k].' '.$prayer->{$k})->implode(' · ');
+            $lines[] = __('Namoz').': '.collect(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'])
+                ->map(fn ($k) => __(PrayerTime::NAMES[$k]).' '.$prayer->{$k})->implode(' · ');
         }
 
         return implode("\n", $lines);
@@ -64,32 +64,32 @@ class Summaries
             return null; // Hech narsa qilinmagan kunda xulosa yuborilmaydi.
         }
 
-        $lines = ['<b>Kun yakuni</b>', ''];
+        $lines = ['<b>'.__('Kun yakuni').'</b>', ''];
         if ($tasks->isNotEmpty()) {
             $done = $tasks->whereNotNull('done_at')->count();
-            $lines[] = "Vazifalar: {$done}/{$tasks->count()}";
+            $lines[] = __('Vazifalar').": {$done}/{$tasks->count()}";
         }
 
         $prayers = $habits->filter->isPrayer();
         if ($prayers->isNotEmpty()) {
-            $lines[] = 'Namoz: '.$prayers->filter(fn ($h) => $entries->get($h->id)?->done_at)->count().'/'.$prayers->count();
+            $lines[] = __('Namoz').': '.$prayers->filter(fn ($h) => $entries->get($h->id)?->done_at)->count().'/'.$prayers->count();
         }
         foreach ($habits->reject->isPrayer() as $h) {
             $entry = $entries->get($h->id);
-            $lines[] = $h->name.': '.match ($h->kind) {
-                'check' => $entry?->done_at ? 'bajarildi' : 'bajarilmadi',
+            $lines[] = $h->displayName().': '.match ($h->kind) {
+                'check' => $entry?->done_at ? __('bajarildi') : __('bajarilmadi'),
                 default => number_format((int) $entry?->value, 0, '.', ' ').' / '.number_format((int) $h->target, 0, '.', ' '),
             };
         }
         if ($minutes > 0) {
-            $lines[] = "O'qish: {$minutes} daqiqa";
+            $lines[] = __("O'qish: :minutes daqiqa", ['minutes' => $minutes]);
         }
         $lines[] = '';
-        $lines[] = "Bugun: +{$points} ball";
+        $lines[] = __('Bugun: +:points ball', ['points' => $points]);
 
         $left = $tasks->whereNull('done_at')->count();
         if ($left > 0) {
-            $lines[] = "{$left} ta vazifa qoldi, ularni ertaga o'tkazishingiz mumkin.";
+            $lines[] = __(":count ta vazifa qoldi, ularni ertaga o'tkazishingiz mumkin.", ['count' => $left]);
         }
 
         return implode("\n", $lines);
@@ -113,18 +113,18 @@ class Summaries
             ->get()->sum(fn (ReadingLog $l) => $l->pages());
 
         $lines = [
-            '<b>Oxirgi 7 kun</b> ('.$from->format('d.m').' – '.$to->format('d.m').')',
+            '<b>'.__('Oxirgi 7 kun').'</b> ('.$from->format('d.m').' – '.$to->format('d.m').')',
             '',
-            'Vazifalar: '.$tasks->whereNotNull('done_at')->count().'/'.$tasks->count(),
+            __('Vazifalar').': '.$tasks->whereNotNull('done_at')->count().'/'.$tasks->count(),
         ];
         if ($prayerIds->isNotEmpty()) {
-            $lines[] = "Namoz: {$prayed}/".($prayerIds->count() * 7);
+            $lines[] = __('Namoz').": {$prayed}/".($prayerIds->count() * 7);
         }
-        $lines[] = "O'qish: ".$this->studyMinutes($user, $from, $to).' daqiqa';
+        $lines[] = __("O'qish: :minutes daqiqa", ['minutes' => $this->studyMinutes($user, $from, $to)]);
         if ($pages > 0) {
-            $lines[] = "Kitob: {$pages} bet";
+            $lines[] = __('Kitob: :pages bet', ['pages' => $pages]);
         }
-        $lines[] = 'Ball: +'.$this->points($user, $from, $to);
+        $lines[] = __('Ball: +:points', ['points' => $this->points($user, $from, $to)]);
 
         return implode("\n", $lines);
     }
@@ -146,6 +146,6 @@ class Summaries
         $days = [1 => 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba'];
         $months = [1 => 'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
 
-        return $days[$day->dayOfWeekIso].', '.$day->day.'-'.$months[$day->month];
+        return __(':weekday, :day-:month', ['weekday' => __($days[$day->dayOfWeekIso]), 'day' => $day->day, 'month' => __($months[$day->month])]);
     }
 }

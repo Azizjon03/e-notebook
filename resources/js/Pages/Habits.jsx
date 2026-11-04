@@ -1,16 +1,17 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
+import { t, tk } from '../lib/i18n';
 
 const DAYS = [
-    [1, 'Du'],
-    [2, 'Se'],
-    [3, 'Cho'],
-    [4, 'Pa'],
-    [5, 'Ju'],
-    [6, 'Sha'],
-    [7, 'Ya'],
+    [1, tk('Du')],
+    [2, tk('Se')],
+    [3, tk('Cho')],
+    [4, tk('Pa')],
+    [5, tk('Ju')],
+    [6, tk('Sha')],
+    [7, tk('Ya')],
 ];
-const KINDS = { check: 'Belgilash', count: 'Son (masalan qadam)', duration: 'Daqiqa' };
+const KINDS = { check: tk('Belgilash'), count: tk('Son (masalan qadam)'), duration: tk('Daqiqa') };
 
 function patch(habit, data) {
     router.patch(`/habits/${habit.id}`, data, { preserveScroll: true });
@@ -28,7 +29,7 @@ function DayPicker({ value, onChange }) {
                     onClick={() => toggle(d)}
                     className={`h-8 w-9 rounded-lg text-xs font-bold ${days.includes(d) ? 'bg-g700 text-white' : 'bg-bg text-muted ring-1 ring-line'}`}
                 >
-                    {label}
+                    {t(label)}
                 </button>
             ))}
         </div>
@@ -41,7 +42,7 @@ function HabitRow({ habit }) {
             <div className="flex items-center gap-3">
                 <div className="min-w-0 flex-1">
                     <p className="font-bold text-ink">{habit.name}</p>
-                    <div className="mt-1 flex gap-1" aria-label="Oxirgi 7 kun">
+                    <div className="mt-1 flex gap-1" aria-label={t("Oxirgi 7 kun")}>
                         {habit.week.map((done, i) => (
                             <span key={i} className={`h-2 w-5 rounded-full ${done ? 'bg-g700' : 'bg-line'}`} />
                         ))}
@@ -62,7 +63,7 @@ function HabitRow({ habit }) {
                 <div className="mt-3 space-y-2 border-t border-line pt-3 text-sm">
                     {habit.kind !== 'check' && (
                         <label className="flex items-center gap-2">
-                            <span className="w-16 text-muted">Maqsad</span>
+                            <span className="w-16 text-muted">{t("Maqsad")}</span>
                             <input
                                 type="number"
                                 min="1"
@@ -70,16 +71,16 @@ function HabitRow({ habit }) {
                                 onBlur={(e) => Number(e.target.value) !== habit.target && patch(habit, { target: Number(e.target.value) })}
                                 className="w-28 rounded-lg border border-line px-2 py-1"
                             />
-                            {habit.kind === 'duration' && <span className="text-muted">daqiqa</span>}
+                            {habit.kind === 'duration' && <span className="text-muted">{t("daqiqa")}</span>}
                         </label>
                     )}
                     <div className="flex items-start gap-2">
-                        <span className="w-16 pt-1.5 text-muted">Kunlar</span>
+                        <span className="w-16 pt-1.5 text-muted">{t("Kunlar")}</span>
                         <DayPicker value={habit.weekdays} onChange={(days) => patch(habit, { weekdays: days })} />
                     </div>
                     {habit.key === 'gym' && (
                         <Link href="/gym" className="inline-block font-semibold text-g700">
-                            Zal dasturi va mashg'ulotlar →
+                            {t("Zal dasturi va mashg'ulotlar →")}
                         </Link>
                     )}
                     {habit.custom && (
@@ -88,7 +89,7 @@ function HabitRow({ habit }) {
                             onClick={() => router.delete(`/habits/${habit.id}`, { preserveScroll: true })}
                             className="text-xs font-semibold text-red"
                         >
-                            Odatni o'chirish
+                            {t("Odatni o'chirish")}
                         </button>
                     )}
                 </div>
@@ -108,11 +109,11 @@ function AddHabit({ areas }) {
             }}
             className="space-y-3 rounded-2xl bg-white p-4 text-sm ring-1 ring-line"
         >
-            <h2 className="text-base font-bold text-ink">Yangi odat</h2>
+            <h2 className="text-base font-bold text-ink">{t("Yangi odat")}</h2>
             <input
                 value={form.data.name}
                 onChange={(e) => form.setData('name', e.target.value)}
-                placeholder="Masalan: Qur'on o'qish"
+                placeholder={t("Masalan: Qur'on o'qish")}
                 maxLength={100}
                 className="w-full rounded-xl border border-line bg-bg px-3 py-2.5 text-base"
             />
@@ -127,7 +128,7 @@ function AddHabit({ areas }) {
                 <select value={form.data.kind} onChange={(e) => form.setData('kind', e.target.value)} className="flex-1 rounded-lg border border-line bg-white px-2 py-2">
                     {Object.entries(KINDS).map(([k, label]) => (
                         <option key={k} value={k}>
-                            {label}
+                            {t(label)}
                         </option>
                     ))}
                 </select>
@@ -138,14 +139,14 @@ function AddHabit({ areas }) {
                     min="1"
                     value={form.data.target}
                     onChange={(e) => form.setData('target', e.target.value)}
-                    placeholder={form.data.kind === 'duration' ? 'Maqsad, daqiqa' : 'Maqsad, soni'}
+                    placeholder={form.data.kind === 'duration' ? t('Maqsad, daqiqa') : t('Maqsad, soni')}
                     className="w-full rounded-lg border border-line px-2 py-2"
                 />
             )}
             <DayPicker value={form.data.weekdays} onChange={(days) => form.setData('weekdays', days)} />
             {(form.errors.name || form.errors.target) && <p className="font-semibold text-red">{form.errors.name || form.errors.target}</p>}
             <button className="w-full rounded-xl bg-g700 py-2.5 font-bold text-white disabled:opacity-40" disabled={form.processing || !form.data.name.trim()}>
-                Qo'shish
+                {t("Qo'shish")}
             </button>
         </form>
     );
@@ -156,9 +157,9 @@ export default function Habits({ habits, areas }) {
 
     return (
         <AppLayout>
-            <Head title="Odatlar" />
-            <h1 className="text-2xl font-extrabold text-ink">Odatlar</h1>
-            <p className="mt-1 text-sm text-muted">Yoqilgan odatlar Bugun sahifasida chiqadi. Chiziqchalar oxirgi 7 kunni ko'rsatadi.</p>
+            <Head title={t("Odatlar")} />
+            <h1 className="text-2xl font-extrabold text-ink">{t("Odatlar")}</h1>
+            <p className="mt-1 text-sm text-muted">{t("Yoqilgan odatlar Bugun sahifasida chiqadi. Chiziqchalar oxirgi 7 kunni ko'rsatadi.")}</p>
 
             {groups.map((g) => (
                 <section key={g.key} className="mt-5">

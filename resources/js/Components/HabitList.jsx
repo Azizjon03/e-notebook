@@ -1,6 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { haptic } from '../telegram/webapp';
+import { t } from '../lib/i18n';
 
 function CountHabit({ habit, date, canMark }) {
     const [value, setValue] = useState(habit.value ?? '');
@@ -33,9 +34,9 @@ function CountHabit({ habit, date, canMark }) {
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
                         className="min-w-0 flex-1 rounded-lg border border-line bg-white px-2 py-1.5 text-sm"
-                        placeholder={habit.kind === 'duration' ? 'Daqiqa' : 'Soni'}
+                        placeholder={habit.kind === 'duration' ? t('Daqiqa') : t('Soni')}
                     />
-                    <button className="rounded-lg bg-g700 px-3 text-sm font-bold text-white">Saqlash</button>
+                    <button className="rounded-lg bg-g700 px-3 text-sm font-bold text-white">{t("Saqlash")}</button>
                 </form>
             )}
         </li>
@@ -65,7 +66,7 @@ function CheckHabit({ habit, date, canMark }) {
             </button>
             {habit.key === 'gym' && (
                 <Link href="/gym" className="shrink-0 rounded-xl bg-g700 px-3 py-3 text-sm font-bold text-white">
-                    Mashg'ulot
+                    {t("Mashg'ulot")}
                 </Link>
             )}
         </li>
@@ -79,9 +80,9 @@ export default function HabitList({ habits, date, canMark }) {
     return (
         <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
             <div className="mb-3 flex items-baseline justify-between">
-                <h2 className="font-bold text-ink">Odatlar</h2>
+                <h2 className="font-bold text-ink">{t("Odatlar")}</h2>
                 <Link href="/habits" className="text-sm font-semibold text-g700">
-                    Sozlash
+                    {t("Sozlash")}
                 </Link>
             </div>
             <ul className="space-y-2">

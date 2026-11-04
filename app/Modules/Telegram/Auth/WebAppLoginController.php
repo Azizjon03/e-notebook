@@ -3,6 +3,7 @@
 namespace App\Modules\Telegram\Auth;
 
 use App\Models\User;
+use App\Modules\Core\I18n\Locale;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,7 @@ class WebAppLoginController
             Log::notice('Telegram initData rad etildi', ['reason' => $e->getMessage()]);
 
             throw ValidationException::withMessages([
-                'init_data' => 'Telegram orqali kirib bo\'lmadi. Ilovani bot ichidan qayta oching.',
+                'init_data' => __("Telegram orqali kirib bo'lmadi. Ilovani bot ichidan qayta oching."),
             ]);
         }
 
@@ -34,6 +35,11 @@ class WebAppLoginController
             // Ism va familiyani foydalanuvchi ro'yxatdan o'tishda o'zi tasdiqlaydi.
             $user->first_name = $tg['first_name'];
             $user->last_name = $tg['last_name'] ?? null;
+            $user->locale = Locale::fromTelegram($tg['language_code'] ?? null);
+        }
+        // Kirish sahifasida til tanlangan bo'lsa, shu til saqlanadi.
+        if ($request->session()->has('locale')) {
+            $user->locale = Locale::valid($request->session()->get('locale'));
         }
         $user->save();
 

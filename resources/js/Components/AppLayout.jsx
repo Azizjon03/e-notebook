@@ -1,11 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
+import { t, tk } from '../lib/i18n';
 
 const TABS = [
-    { href: '/', label: 'Bugun', match: (url) => url === '/' || url.startsWith('/?') },
-    { href: '/calendar', label: 'Kalendar', match: (url) => url.startsWith('/calendar') },
-    { href: '/habits', label: 'Odatlar', match: (url) => url.startsWith('/habits') },
-    { href: '/study', label: "O'qish", match: (url) => url.startsWith('/study') },
-    { href: '/books', label: 'Kitoblar', match: (url) => url.startsWith('/books') },
+    { href: '/', label: tk('Bugun'), match: (url) => url === '/' || url.startsWith('/?') },
+    { href: '/calendar', label: tk('Kalendar'), match: (url) => url.startsWith('/calendar') },
+    { href: '/habits', label: tk('Odatlar'), match: (url) => url.startsWith('/habits') },
+    { href: '/study', label: tk("O'qish"), match: (url) => url.startsWith('/study') },
+    { href: '/books', label: tk('Kitoblar'), match: (url) => url.startsWith('/books') },
 ];
 
 export default function AppLayout({ children }) {
@@ -23,7 +24,7 @@ export default function AppLayout({ children }) {
                             Admin
                         </Link>
                     )}
-                    <Link href="/settings" aria-label="Sozlamalar" className="grid h-9 w-9 place-items-center rounded-lg text-muted ring-1 ring-line">
+                    <Link href="/settings" aria-label={t("Sozlamalar")} className="grid h-9 w-9 place-items-center rounded-lg text-muted ring-1 ring-line">
                         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
@@ -44,7 +45,7 @@ export default function AppLayout({ children }) {
                                 className={`flex-1 py-3 text-center text-[13px] font-bold ${active ? 'text-g700' : 'text-muted'}`}
                             >
                                 <span className={`mx-auto mb-1 block h-1 w-8 rounded-full ${active ? 'bg-g700' : 'bg-transparent'}`} />
-                                {tab.label}
+                                {t(tab.label)}
                             </Link>
                         );
                     })}

@@ -2,11 +2,12 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '../Components/AppLayout';
 import { formatShort } from '../lib/dates';
+import { t, tk } from '../lib/i18n';
 
 const SECTIONS = [
-    ['reading', "O'qilmoqda"],
-    ['planned', 'Navbatda'],
-    ['finished', 'Tugatilgan'],
+    ['reading', tk("O'qilmoqda")],
+    ['planned', tk('Navbatda')],
+    ['finished', tk('Tugatilgan')],
 ];
 
 function LogForm({ book, onDone }) {
@@ -32,13 +33,13 @@ function LogForm({ book, onDone }) {
                     className="min-w-0 flex-1 rounded-lg border border-line px-2 py-2"
                 />
                 <button className="rounded-lg bg-g700 px-3 font-bold text-white" disabled={form.processing || !form.data.to_page}>
-                    Saqlash
+                    {t("Saqlash")}
                 </button>
             </div>
             <input
                 value={form.data.chapter}
                 onChange={(e) => form.setData('chapter', e.target.value)}
-                placeholder="Bob (ixtiyoriy)"
+                placeholder={t("Bob (ixtiyoriy)")}
                 maxLength={150}
                 className="w-full rounded-lg border border-line px-2 py-2"
             />
@@ -58,13 +59,13 @@ function BookCard({ book, first, last }) {
                 <div className="min-w-0 flex-1">
                     <p className="font-bold text-ink">{book.title}</p>
                     <p className="text-sm text-muted">
-                        {[book.author, book.stage].filter(Boolean).join(' · ') || (book.area === 'ilm' ? 'Ilm' : "O'qish")}
+                        {[book.author, book.stage].filter(Boolean).join(' · ') || (book.area === 'ilm' ? t('Ilm') : t("O'qish"))}
                     </p>
                     {book.total_pages && (
                         <div className="mt-2">
                             <div className="flex justify-between text-xs font-semibold text-muted">
                                 <span>
-                                    {book.current_page} / {book.total_pages} bet
+                                    {t(':current / :total bet', { current: book.current_page, total: book.total_pages })}
                                     {book.last_chapter && ` · ${book.last_chapter}`}
                                 </span>
                                 <span>{book.percent}%</span>
@@ -80,10 +81,10 @@ function BookCard({ book, first, last }) {
                 </div>
                 {book.status !== 'finished' && (
                     <div className="flex shrink-0 flex-col">
-                        <button disabled={first} onClick={() => router.post(`/books/${book.id}/move`, { direction: 'up' }, opts)} className="px-1 text-muted disabled:opacity-20" aria-label="Yuqoriga">
+                        <button disabled={first} onClick={() => router.post(`/books/${book.id}/move`, { direction: 'up' }, opts)} className="px-1 text-muted disabled:opacity-20" aria-label={t("Yuqoriga")}>
                             ▲
                         </button>
-                        <button disabled={last} onClick={() => router.post(`/books/${book.id}/move`, { direction: 'down' }, opts)} className="px-1 text-muted disabled:opacity-20" aria-label="Pastga">
+                        <button disabled={last} onClick={() => router.post(`/books/${book.id}/move`, { direction: 'down' }, opts)} className="px-1 text-muted disabled:opacity-20" aria-label={t("Pastga")}>
                             ▼
                         </button>
                     </div>
@@ -96,13 +97,13 @@ function BookCard({ book, first, last }) {
                 ) : (
                     <div className="mt-3 flex gap-3 text-sm font-semibold">
                         <button onClick={() => setLogging(true)} className="text-g700">
-                            + O'qiganimni yozish
+                            {t("+ O'qiganimni yozish")}
                         </button>
                         <button
-                            onClick={() => window.confirm("Kitobni o'chiraymi?") && router.delete(`/books/${book.id}`, opts)}
+                            onClick={() => window.confirm(t("Kitobni o'chiraymi?")) && router.delete(`/books/${book.id}`, opts)}
                             className="ml-auto text-red"
                         >
-                            O'chirish
+                            {t("O'chirish")}
                         </button>
                     </div>
                 ))}
@@ -117,7 +118,7 @@ function AddBook({ areas }) {
     if (!open) {
         return (
             <button onClick={() => setOpen(true)} className="w-full rounded-2xl border-2 border-dashed border-line py-4 font-bold text-g700">
-                + Kitob qo'shish
+                {t("+ Kitob qo'shish")}
             </button>
         );
     }
@@ -132,11 +133,11 @@ function AddBook({ areas }) {
             }}
             className="space-y-2 rounded-2xl bg-white p-4 text-sm ring-1 ring-line"
         >
-            <input className={field} placeholder="Kitob nomi" value={form.data.title} onChange={(e) => form.setData('title', e.target.value)} maxLength={200} />
-            <input className={field} placeholder="Muallif" value={form.data.author} onChange={(e) => form.setData('author', e.target.value)} maxLength={150} />
+            <input className={field} placeholder={t("Kitob nomi")} value={form.data.title} onChange={(e) => form.setData('title', e.target.value)} maxLength={200} />
+            <input className={field} placeholder={t("Muallif")} value={form.data.author} onChange={(e) => form.setData('author', e.target.value)} maxLength={150} />
             <div className="flex gap-2">
-                <input className={field} placeholder="Bosqich (ixtiyoriy)" value={form.data.stage} onChange={(e) => form.setData('stage', e.target.value)} maxLength={100} />
-                <input className={`${field} w-28`} type="number" min="1" placeholder="Betlar" value={form.data.total_pages} onChange={(e) => form.setData('total_pages', e.target.value)} />
+                <input className={field} placeholder={t("Bosqich (ixtiyoriy)")} value={form.data.stage} onChange={(e) => form.setData('stage', e.target.value)} maxLength={100} />
+                <input className={`${field} w-28`} type="number" min="1" placeholder={t("Betlar")} value={form.data.total_pages} onChange={(e) => form.setData('total_pages', e.target.value)} />
             </div>
             <select className={`${field} bg-white`} value={form.data.area} onChange={(e) => form.setData('area', e.target.value)}>
                 {areas.map((a) => (
@@ -148,10 +149,10 @@ function AddBook({ areas }) {
             {form.errors.title && <p className="font-semibold text-red">{form.errors.title}</p>}
             <div className="flex gap-2">
                 <button type="button" onClick={() => setOpen(false)} className="flex-1 rounded-xl py-2.5 font-bold text-muted ring-1 ring-line">
-                    Bekor qilish
+                    {t("Bekor qilish")}
                 </button>
                 <button className="flex-1 rounded-xl bg-g700 py-2.5 font-bold text-white" disabled={form.processing || !form.data.title.trim()}>
-                    Qo'shish
+                    {t("Qo'shish")}
                 </button>
             </div>
         </form>
@@ -161,10 +162,10 @@ function AddBook({ areas }) {
 export default function Books({ books, pagesWeek, areas }) {
     return (
         <AppLayout>
-            <Head title="Kitoblar" />
+            <Head title={t("Kitoblar")} />
             <div className="flex items-baseline justify-between">
-                <h1 className="text-2xl font-extrabold text-ink">Kitoblar</h1>
-                <span className="text-sm font-semibold text-muted">7 kunda {pagesWeek} bet</span>
+                <h1 className="text-2xl font-extrabold text-ink">{t("Kitoblar")}</h1>
+                <span className="text-sm font-semibold text-muted">{t('7 kunda :pages bet', { pages: pagesWeek })}</span>
             </div>
 
             {SECTIONS.map(([status, label]) => {
@@ -172,7 +173,7 @@ export default function Books({ books, pagesWeek, areas }) {
                 if (!list.length) return null;
                 return (
                     <section key={status} className="mt-5">
-                        <h2 className="mb-2 text-sm font-bold tracking-wide text-muted uppercase">{label}</h2>
+                        <h2 className="mb-2 text-sm font-bold tracking-wide text-muted uppercase">{t(label)}</h2>
                         <ul className="space-y-2">
                             {list.map((b, i) => (
                                 <BookCard key={b.id} book={b} first={i === 0} last={i === list.length - 1} />
@@ -182,7 +183,7 @@ export default function Books({ books, pagesWeek, areas }) {
                 );
             })}
 
-            {books.length === 0 && <p className="mt-6 text-center text-muted">Hali kitob qo'shilmagan. O'qiyotgan yoki o'qimoqchi bo'lgan kitoblaringizni qo'shing.</p>}
+            {books.length === 0 && <p className="mt-6 text-center text-muted">{t("Hali kitob qo'shilmagan. O'qiyotgan yoki o'qimoqchi bo'lgan kitoblaringizni qo'shing.")}</p>}
 
             <div className="mt-6">
                 <AddBook areas={areas} />

@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Reminders;
 
 use App\Models\User;
+use App\Modules\Core\I18n\Locale;
 use App\Modules\Planner\Task;
 use App\Modules\Routine\Habit;
 use App\Modules\Routine\PrayerTime;
@@ -31,8 +32,23 @@ class ReminderPlanner
      */
     public function due(User $user, CarbonImmutable $nowUtc): array
     {
+        // Eslatmalar foydalanuvchi tilida tuziladi.
+        $previous = app()->getLocale();
+        app()->setLocale(Locale::valid($user->locale));
+
+        try {
+            return $this->collect($user, $nowUtc);
+        } finally {
+            app()->setLocale($previous);
+        }
+    }
+
+    /**
+     * @return list<Reminder>
+     */
+    private function collect(User $user, CarbonImmutable $nowUtc): array
+    {
         $now = $nowUtc->setTimezone($user->timezone);
-        $today = $now->toDateString();
         $sent = DB::table('reminder_logs')->where('user_id', $user->id)
             ->where('sent_at', '>=', $nowUtc->subDays(2))
             ->pluck('sent_at', 'ref');
@@ -77,7 +93,7 @@ class ReminderPlanner
             if ($this->isDue($now, $time->subMinutes($user->prayer_remind_before))) {
                 $out[] = new Reminder(
                     "prayer:{$key}:{$now->toDateString()}",
-                    PrayerTime::NAMES[$key].' vaqti '.$row->{$key}.' da kiradi.',
+                    __(':prayer vaqti :time da kiradi.', ['prayer' => __(PrayerTime::NAMES[$key]), 'time' => $row->{$key}]),
                 );
             }
         }
@@ -104,8 +120,8 @@ class ReminderPlanner
             })
             ->map(fn (Task $t) => new Reminder(
                 "task:{$t->id}",
-                '<b>'.e($t->title).'</b> '.substr($t->start_time, 0, 5).' da boshlanadi.',
-                $this->button('Bugungi reja', '/'),
+                __(':task :time da boshlanadi.', ['task' => '<b>'.e($t->title).'</b>', 'time' => substr($t->start_time, 0, 5)]),
+                $this->button(__('Bugungi reja'), '/'),
             ))
             ->values()
             ->all();
@@ -126,7 +142,6 @@ class ReminderPlanner
         $at = CarbonImmutable::parse($now->toDateString().' '.$user->planning_time, $user->timezone);
         $target = $user->planning_mode === 'evening' ? $now->addDay() : $now;
         $targetDate = $target->toDateString();
-        $label = $user->planning_mode === 'evening' ? 'Ertangi kunni' : 'Bugungi kunni';
 
         $planned = Task::withoutGlobalScope('owner')->where('user_id', $user->id)->whereDate('date', $targetDate)->count();
         $leftToday = Task::withoutGlobalScope('owner')->where('user_id', $user->id)
@@ -134,19 +149,23 @@ class ReminderPlanner
 
         $out = [];
         if ($this->isDue($now, $at)) {
-            $text = "{$label} rejalashtirish vaqti bo'ldi.";
+            $text = $user->planning_mode === 'evening'
+                ? __("Ertangi kunni rejalashtirish vaqti bo'ldi.")
+                : __("Bugungi kunni rejalashtirish vaqti bo'ldi.");
             if ($user->planning_mode === 'evening' && $leftToday > 0) {
-                $text .= " Bugundan {$leftToday} ta bajarilmagan vazifa qoldi, ularni ertaga o'tkazishingiz mumkin.";
+                $text .= ' '.__("Bugundan :count ta bajarilmagan vazifa qoldi, ularni ertaga o'tkazishingiz mumkin.", ['count' => $leftToday]);
             }
-            $out[] = new Reminder("plan:{$targetDate}", $text, $this->button('Rejalashtirish', '/?date='.$targetDate));
+            $out[] = new Reminder("plan:{$targetDate}", $text, $this->button(__('Rejalashtirish'), '/?date='.$targetDate));
         }
 
         // Qayta eslatma: birinchisi yuborilgan, 30 daqiqa o'tgan va hali reja yo'q bo'lsa.
         if (isset($sent["plan:{$targetDate}"]) && $planned === 0 && $this->isDue($now, $at->addMinutes(self::RETRY_AFTER))) {
             $out[] = new Reminder(
                 "plan-again:{$targetDate}",
-                "{$label} hali rejalashtirmadingiz. 5 daqiqa ajrating.",
-                $this->button('Rejalashtirish', '/?date='.$targetDate),
+                $user->planning_mode === 'evening'
+                    ? __('Ertangi kunni hali rejalashtirmadingiz. 5 daqiqa ajrating.')
+                    : __('Bugungi kunni hali rejalashtirmadingiz. 5 daqiqa ajrating.'),
+                $this->button(__('Rejalashtirish'), '/?date='.$targetDate),
             );
         }
 
@@ -171,8 +190,8 @@ class ReminderPlanner
 
         return [new Reminder(
             'week:'.$nextMonday,
-            'Haftalik reja vaqti: kelasi hafta uchun asosiy maqsadlar va vazifalarni belgilang.',
-            $this->button('Haftani rejalashtirish', '/calendar?view=week&date='.$nextMonday),
+            __('Haftalik reja vaqti: kelasi hafta uchun asosiy maqsadlar va vazifalarni belgilang.'),
+            $this->button(__('Haftani rejalashtirish'), '/calendar?view=week&date='.$nextMonday),
         )];
     }
 
@@ -192,7 +211,7 @@ class ReminderPlanner
 
         $text = $this->summaries->daySummary($user, $now);
 
-        return $text ? [new Reminder('summary:'.$now->toDateString(), $text, $this->button('Natijalar', '/study'))] : [];
+        return $text ? [new Reminder('summary:'.$now->toDateString(), $text, $this->button(__('Natijalar'), '/study'))] : [];
     }
 
     /**

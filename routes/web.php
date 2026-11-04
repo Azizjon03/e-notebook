@@ -2,6 +2,8 @@
 
 use App\Modules\Admin\AdminController;
 use App\Modules\Admin\EnsureAdmin;
+use App\Modules\Core\Dev\DevLoginController;
+use App\Modules\Core\I18n\LocaleController;
 use App\Modules\Core\SettingsController;
 use App\Modules\Core\StatsController;
 use App\Modules\Ilm\BookController;
@@ -17,10 +19,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', fn () => Inertia::render('Login'))->name('login');
+    Route::get('/login', fn () => Inertia::render('Login', ['devLogin' => DevLoginController::enabled()]))->name('login');
     Route::post('/auth/telegram/webapp', WebAppLoginController::class)
         ->middleware('throttle:20,1')
         ->name('auth.telegram.webapp');
+
+    if (DevLoginController::enabled()) {
+        Route::post('/auth/dev', DevLoginController::class)->name('auth.dev');
+    }
 });
 
 Route::middleware('auth')->group(function () {
@@ -71,6 +77,8 @@ Route::middleware(['auth', EnsureAdmin::class])->prefix('admin')->name('admin.')
     Route::post('/bot/commands', [AdminController::class, 'saveCommands'])->name('bot.commands');
     Route::post('/bot/texts', [AdminController::class, 'saveTexts'])->name('bot.texts');
 });
+
+Route::post('/locale', LocaleController::class)->middleware('throttle:30,1')->name('locale');
 
 Route::post('/telegram/webhook', WebhookController::class)
     ->withoutMiddleware(ValidateCsrfToken::class)

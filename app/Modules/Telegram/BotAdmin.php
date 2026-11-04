@@ -2,6 +2,7 @@
 
 namespace App\Modules\Telegram;
 
+use App\Modules\Core\I18n\Locale;
 use RuntimeException;
 
 /**
@@ -14,6 +15,7 @@ class BotAdmin
         ['command' => 'bugun', 'description' => 'Bugungi reja'],
         ['command' => 'ertaga', 'description' => 'Ertangi reja'],
         ['command' => 'hafta', 'description' => 'Oxirgi 7 kun natijasi'],
+        ['command' => 'til', 'description' => 'Tilni o\'zgartirish'],
     ];
 
     public function __construct(
@@ -87,7 +89,7 @@ class BotAdmin
     public function setMenuButton(): void
     {
         $this->ensure('setChatMenuButton', [
-            'menu_button' => ['type' => 'web_app', 'text' => $this->texts->get('menu_button'), 'web_app' => ['url' => $this->appUrl()]],
+            'menu_button' => ['type' => 'web_app', 'text' => $this->texts->get('menu_button', [], Locale::DEFAULT), 'web_app' => ['url' => $this->appUrl()]],
         ]);
     }
 
@@ -105,7 +107,18 @@ class BotAdmin
      */
     public function setCommands(array $commands): void
     {
+        // Standart (o'zbekcha) ro'yxat, keyin rus va ingliz tilidagi foydalanuvchilar uchun tarjimasi.
         $this->ensure('setMyCommands', ['commands' => $commands]);
+
+        foreach (array_keys(Locale::ALL) as $locale) {
+            if ($locale === Locale::DEFAULT) {
+                continue;
+            }
+            $this->ensure('setMyCommands', [
+                'commands' => array_map(fn ($c) => ['command' => $c['command'], 'description' => __($c['description'], [], $locale)], $commands),
+                'language_code' => $locale,
+            ]);
+        }
     }
 
     private function result(string $method): mixed

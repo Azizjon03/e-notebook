@@ -63,9 +63,9 @@ class Recurrence extends Model
         $days = ['', 'Du', 'Se', 'Cho', 'Pa', 'Ju', 'Sha', 'Ya'];
 
         return match ($this->frequency) {
-            'daily' => 'Har kuni',
-            'weekly' => 'Har hafta: '.collect($this->weekdays ?? [])->sort()->map(fn ($d) => $days[$d])->implode(', '),
-            'monthly' => 'Har oy '.$this->starts_on->day.'-kuni',
+            'daily' => __('Har kuni'),
+            'weekly' => __('Har hafta').': '.collect($this->weekdays ?? [])->sort()->map(fn ($d) => __($days[$d]))->implode(', '),
+            'monthly' => __('Har oy :day-kuni', ['day' => $this->starts_on->day]),
             default => '',
         };
     }

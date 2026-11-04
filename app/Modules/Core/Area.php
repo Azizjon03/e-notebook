@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
@@ -25,6 +26,12 @@ class Area extends Model
     ];
 
     protected $guarded = [];
+
+    /** Nom bazada o'zbekcha saqlanadi, chiqishda joriy tilga tarjima qilinadi. */
+    protected function name(): Attribute
+    {
+        return Attribute::get(fn (string $value) => __($value));
+    }
 
     public static function idFor(string $key): int
     {

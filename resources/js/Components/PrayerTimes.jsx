@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { haptic } from '../telegram/webapp';
+import { t } from '../lib/i18n';
 
 /**
  * Namoz vaqtlari va namoz odatlari bitta kartada: chipni bosib namozni "o'qildi" deb belgilash mumkin.
@@ -26,14 +27,14 @@ export default function PrayerTimes({ prayers, habits, date, now, isToday, canMa
     return (
         <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
             <div className="mb-3 flex items-baseline justify-between gap-2">
-                <h2 className="font-bold text-ink">Namoz</h2>
+                <h2 className="font-bold text-ink">{t('Namoz')}</h2>
                 <span className="text-sm font-semibold text-muted">
                     {next ? (
                         <span className="text-g700">
-                            Keyingisi: {next.name} {next.time}
+                            {t('Keyingisi: :name :time', { name: next.name, time: next.time })}
                         </span>
                     ) : (
-                        `${prayed}/${total} o'qildi`
+                        t(":prayed/:total o'qildi", { prayed, total })
                     )}
                 </span>
             </div>
@@ -50,7 +51,7 @@ export default function PrayerTimes({ prayers, habits, date, now, isToday, canMa
                                 disabled={!habit || !canMark}
                                 onClick={() => mark(habit)}
                                 aria-pressed={done ? 'true' : 'false'}
-                                aria-label={habit ? `${p.name}: ${done ? "o'qildi" : "o'qilmadi"}` : p.name}
+                                aria-label={habit ? `${p.name}: ${done ? t("o'qildi") : t("o'qilmadi")}` : p.name}
                                 className={`w-full rounded-xl py-2 ${tone} disabled:cursor-default`}
                             >
                                 <span className={`block text-[11px] font-semibold ${done ? 'text-white/80' : 'text-muted'}`}>{p.name}</span>
@@ -62,7 +63,7 @@ export default function PrayerTimes({ prayers, habits, date, now, isToday, canMa
                     );
                 })}
             </ul>
-            {canMark && <p className="mt-2 text-xs text-muted">O'qilgan namozni belgilash uchun ustiga bosing.</p>}
+            {canMark && <p className="mt-2 text-xs text-muted">{t("O'qilgan namozni belgilash uchun ustiga bosing.")}</p>}
         </section>
     );
 }

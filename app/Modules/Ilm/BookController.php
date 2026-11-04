@@ -91,8 +91,8 @@ class BookController
             'to_page' => ['required', 'integer', 'min:'.($book->current_page + 1), 'max:'.$max],
             'chapter' => ['nullable', 'string', 'max:150'],
         ], [
-            'to_page.min' => 'Sahifa hozirgi joydan ('.$book->current_page.') katta bo\'lsin.',
-            'to_page.max' => 'Kitobda '.$max.' sahifa bor.',
+            'to_page.min' => __("Sahifa hozirgi joydan (:page) katta bo'lsin.", ['page' => $book->current_page]),
+            'to_page.max' => __('Kitobda :max sahifa bor.', ['max' => $max]),
         ]);
 
         $user = $request->user();
@@ -133,6 +133,6 @@ class BookController
             'area' => ['required', Rule::in([Area::ILM, Area::STUDY])],
             'total_pages' => ['nullable', 'integer', 'min:1', 'max:100000', 'gte:'.($book?->current_page ?? 0)],
             'status' => ['sometimes', Rule::in(Book::STATUSES)],
-        ], ['title.required' => 'Kitob nomini yozing.']);
+        ], ['title.required' => __('Kitob nomini yozing.')]);
     }
 }
