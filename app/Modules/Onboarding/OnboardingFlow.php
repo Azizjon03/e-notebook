@@ -4,6 +4,7 @@ namespace App\Modules\Onboarding;
 
 use App\Models\User;
 use App\Modules\Geo\Region;
+use App\Modules\Telegram\BotTexts;
 use App\Modules\Telegram\TelegramClient;
 
 /**
@@ -14,7 +15,10 @@ class OnboardingFlow
 {
     public const PICK_REGION = 'Viloyatni tanlash';
 
-    public function __construct(private readonly TelegramClient $telegram) {}
+    public function __construct(
+        private readonly TelegramClient $telegram,
+        private readonly BotTexts $texts,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $update
@@ -78,10 +82,7 @@ class OnboardingFlow
         ]);
         $user->update(['onboarding_step' => 'name']);
 
-        $this->telegram->sendMessage($chatId,
-            "Assalomu alaykum! e-notebook'ga xush kelibsiz.\n\nIsm va familiyangizni yozing, masalan: <i>Ali Valiyev</i>",
-            ['remove_keyboard' => true],
-        );
+        $this->telegram->sendMessage($chatId, $this->texts->get('welcome'), ['remove_keyboard' => true]);
     }
 
     private function saveName(int $chatId, User $user, string $text): void
@@ -89,7 +90,7 @@ class OnboardingFlow
         $parts = preg_split('/\s+/u', $text, 2, PREG_SPLIT_NO_EMPTY) ?: [];
 
         if (count($parts) < 2 || str_starts_with($text, '/') || mb_strlen($text) > 80) {
-            $this->telegram->sendMessage($chatId, 'Iltimos, ism va familiyani bitta xabarda yozing, masalan: <i>Ali Valiyev</i>');
+            $this->telegram->sendMessage($chatId, $this->texts->get('name_invalid'));
 
             return;
         }
@@ -106,7 +107,7 @@ class OnboardingFlow
     private function askLocation(int $chatId, User $user): void
     {
         $this->telegram->sendMessage($chatId,
-            "Rahmat, {$user->first_name}! Namoz vaqtlari to'g'ri chiqishi uchun joylashuvingizni yuboring yoki viloyatni tanlang.",
+            $this->texts->get('ask_location', ['name' => $user->first_name]),
             [
                 'keyboard' => [
                     [['text' => 'Joylashuvni yuborish', 'request_location' => true]],
@@ -176,7 +177,7 @@ class OnboardingFlow
     private function askGender(int $chatId): void
     {
         $this->telegram->sendMessage($chatId,
-            'Jinsingizni tanlang. Bu faqat sizga mos zal dasturlarini ko\'rsatish uchun kerak.',
+            $this->texts->get('ask_gender'),
             ['inline_keyboard' => [[
                 ['text' => 'Erkak', 'callback_data' => 'gender:male'],
                 ['text' => 'Ayol', 'callback_data' => 'gender:female'],
@@ -214,12 +215,12 @@ class OnboardingFlow
     private function sendAppButton(int $chatId, User $user, bool $welcome = false): void
     {
         $text = $welcome
-            ? "Tayyor, {$user->first_name}! Endi kunlik rejalaringizni ilovada tuzishingiz mumkin."
-            : 'Ilovani ochish uchun tugmani bosing.';
+            ? $this->texts->get('done', ['name' => $user->first_name])
+            : $this->texts->get('open_app');
 
         $this->telegram->sendMessage($chatId, $text, [
             'inline_keyboard' => [[
-                ['text' => 'Ilovani ochish', 'web_app' => ['url' => rtrim((string) config('app.url'), '/').'/login']],
+                ['text' => $this->texts->get('app_button'), 'web_app' => ['url' => rtrim((string) config('app.url'), '/').'/login']],
             ]],
         ]);
     }

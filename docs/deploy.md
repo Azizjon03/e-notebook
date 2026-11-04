@@ -114,3 +114,14 @@ sudo -u enotebook php artisan telegram:set-webhook
 ```
 
 Shundan keyin botga `/start` yozib, ro'yxatdan o'tishni tekshiring.
+
+## 9. Admin
+
+O'zingizni admin qilish (avval botga `/start` yozing, Telegram ID'ingizni @userinfobot dan bilib olasiz):
+
+```bash
+sudo -u enotebook php artisan user:make-admin <telegram_id>
+```
+
+Keyin ilovada "Admin" tugmasi chiqadi: `/admin` da statistika, `/admin/bot` da webhook holati,
+bot profili, buyruqlar va bot xabarlari matnlari. Bot tokeni u yerdan kiritilmaydi, faqat `.env` da.

@@ -31,6 +31,7 @@ class User extends Authenticatable
         'longitude',
         'timezone',
         'onboarding_step',
+        'is_admin',
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable
             'telegram_id' => 'integer',
             'latitude' => 'float',
             'longitude' => 'float',
+            'is_admin' => 'boolean',
         ];
     }
 
