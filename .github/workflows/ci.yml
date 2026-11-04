@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: enotebook
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: enotebook_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U enotebook"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: enotebook_test
+      DB_USERNAME: enotebook
+      DB_PASSWORD: secret
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, redis, intl, mbstring
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Composer paketlari
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: npm paketlari va build
+        run: |
+          npm ci
+          npm run build
+
+      - name: .env tayyorlash
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Kod uslubi (Pint)
+        run: vendor/bin/pint --test
+
+      - name: Testlar (Pest)
+        run: vendor/bin/pest
