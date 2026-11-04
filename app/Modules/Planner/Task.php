@@ -7,6 +7,7 @@ use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
@@ -15,7 +16,7 @@ class Task extends Model
     /** @use HasFactory<TaskFactory> */
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'date', 'start_time', 'end_time', 'done_at', 'moved_from_date', 'position'];
+    protected $fillable = ['user_id', 'recurrence_id', 'title', 'date', 'start_time', 'end_time', 'done_at', 'moved_from_date', 'position'];
 
     protected function casts(): array
     {
@@ -29,6 +30,11 @@ class Task extends Model
     protected static function newFactory(): TaskFactory
     {
         return TaskFactory::new();
+    }
+
+    public function recurrence(): BelongsTo
+    {
+        return $this->belongsTo(Recurrence::class);
     }
 
     public function isDone(): bool
@@ -60,6 +66,7 @@ class Task extends Model
             'end_time' => $this->end_time ? substr($this->end_time, 0, 5) : null,
             'done' => $this->isDone(),
             'moved_from' => $this->moved_from_date?->toDateString(),
+            'recurring' => $this->recurrence_id !== null,
         ];
     }
 }

@@ -11,11 +11,15 @@ use Inertia\Response;
 
 class TaskController
 {
+    public function __construct(private readonly RecurrenceExpander $expander) {}
+
     public function today(Request $request): Response
     {
         $tz = $request->user()->timezone;
         $today = CarbonImmutable::now($tz)->toDateString();
         $date = $this->validDate($request->query('date')) ?? $today;
+        $day = CarbonImmutable::parse($date);
+        $this->expander->expand($day, $day, CarbonImmutable::parse($today));
 
         $tasks = Task::onDate($date)->ordered()->get();
         $overdue = $date === $today
@@ -34,8 +38,32 @@ class TaskController
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request);
-        $data['position'] = (int) Task::onDate($data['date'])->max('position') + 1;
+        $repeat = $request->validate([
+            'repeat' => ['nullable', Rule::in(Recurrence::FREQUENCIES)],
+            'weekdays' => ['nullable', 'array', 'required_if:repeat,weekly'],
+            'weekdays.*' => ['integer', 'between:1,7'],
+            'until' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:date'],
+        ], ['weekdays.required_if' => 'Hafta kunlarini tanlang.']);
 
+        if ($repeat['repeat'] ?? null) {
+            Recurrence::create([
+                'title' => $data['title'],
+                'start_time' => $data['start_time'] ?? null,
+                'end_time' => $data['end_time'] ?? null,
+                'frequency' => $repeat['repeat'],
+                'weekdays' => $repeat['repeat'] === 'weekly' ? array_map('intval', $repeat['weekdays']) : null,
+                'starts_on' => $data['date'],
+                'until' => $repeat['until'] ?? null,
+            ]);
+
+            $today = CarbonImmutable::now($request->user()->timezone)->startOfDay();
+            $day = CarbonImmutable::parse($data['date']);
+            $this->expander->expand($day, $day->addDays(6), $today);
+
+            return back();
+        }
+
+        $data['position'] = (int) Task::onDate($data['date'])->max('position') + 1;
         Task::create($data);
 
         return back();
@@ -58,6 +86,7 @@ class TaskController
     public function moveToTomorrow(Task $task): RedirectResponse
     {
         if (! $task->isDone()) {
+            $this->detachFromRecurrence($task);
             $task->update([
                 'moved_from_date' => $task->moved_from_date ?? $task->date,
                 'date' => $task->date->addDay()->toDateString(),
@@ -75,19 +104,45 @@ class TaskController
         $today = CarbonImmutable::now($request->user()->timezone)->toDateString();
 
         Task::whereDate('date', '<', $today)->whereNull('done_at')->get()
-            ->each(fn (Task $t) => $t->update([
-                'moved_from_date' => $t->moved_from_date ?? $t->date,
-                'date' => $today,
-            ]));
+            ->each(function (Task $t) use ($today) {
+                $this->detachFromRecurrence($t);
+                $t->update([
+                    'moved_from_date' => $t->moved_from_date ?? $t->date,
+                    'date' => $today,
+                ]);
+            });
 
         return back();
     }
 
-    public function destroy(Task $task): RedirectResponse
+    public function destroy(Request $request, Task $task): RedirectResponse
     {
+        $rule = $task->recurrence;
+
+        if ($rule && $request->query('scope') === 'all') {
+            // Shu kundan boshlab takrorlanish to'xtaydi; bajarilganlar tarixda qoladi.
+            $rule->update(['until' => $task->date->subDay()->toDateString()]);
+            $rule->tasks()->where('date', '>=', $task->date->toDateString())->whereNull('done_at')->delete();
+
+            return back();
+        }
+
+        $rule?->skip($task->date->toDateString());
         $task->delete();
 
         return back();
+    }
+
+    /**
+     * Takrorlanadigan vazifa nusxasi boshqa kunga ko'chsa, u oddiy vazifaga aylanadi
+     * va qoida o'sha kunni qayta yaratmaydi.
+     */
+    private function detachFromRecurrence(Task $task): void
+    {
+        if ($task->recurrence) {
+            $task->recurrence->skip($task->date->toDateString());
+            $task->recurrence_id = null;
+        }
     }
 
     /**

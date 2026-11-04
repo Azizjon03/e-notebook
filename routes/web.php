@@ -2,6 +2,7 @@
 
 use App\Modules\Admin\AdminController;
 use App\Modules\Admin\EnsureAdmin;
+use App\Modules\Planner\CalendarController;
 use App\Modules\Planner\TaskController;
 use App\Modules\Telegram\Auth\WebAppLoginController;
 use App\Modules\Telegram\Webhook\WebhookController;
@@ -18,6 +19,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [TaskController::class, 'today'])->name('today');
+    Route::get('/calendar', CalendarController::class)->name('calendar');
 
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::post('/tasks/carry-over', [TaskController::class, 'carryOver'])->name('tasks.carry-over');

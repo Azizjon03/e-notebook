@@ -36,6 +36,7 @@ export default function TaskItem({ task }) {
                             {task.end_time && `–${task.end_time}`}
                         </span>
                     )}
+                    {task.recurring && <span className="rounded-full bg-blue/10 px-2 py-0.5 text-blue">Takrorlanadi</span>}
                     {task.moved_from && <span>{formatShort(task.moved_from)} dan ko'chirildi</span>}
                 </div>
             </div>
@@ -52,7 +53,11 @@ export default function TaskItem({ task }) {
                 )}
                 <button
                     type="button"
-                    onClick={() => router.delete(`/tasks/${task.id}`, opts)}
+                    onClick={() => {
+                        // Takrorlanadigan vazifa: faqat shu kunmi yoki keyingilari ham?
+                        const all = task.recurring && window.confirm('Keyingi kunlardagi takrorlarini ham o\'chiraymi? (Bekor = faqat shu kun)');
+                        router.delete(`/tasks/${task.id}${all ? '?scope=all' : ''}`, opts);
+                    }}
                     aria-label="O'chirish"
                     className="rounded-lg px-2 py-1 text-xs font-semibold text-red hover:bg-bg"
                 >
