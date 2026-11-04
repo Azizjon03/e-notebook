@@ -21,6 +21,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'telegram_id',
+        'phone',
+        'password',
         'telegram_username',
         'first_name',
         'last_name',
@@ -50,6 +52,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
+        'password',
         'remember_token',
     ];
 
@@ -60,9 +63,11 @@ class User extends Authenticatable
     {
         return [
             'telegram_id' => 'integer',
+            'password' => 'hashed',
             'latitude' => 'float',
             'longitude' => 'float',
             'is_admin' => 'boolean',
+            'is_demo' => 'boolean',
             'prayer_reminders' => 'boolean',
             'task_reminders' => 'boolean',
             'day_summary' => 'boolean',

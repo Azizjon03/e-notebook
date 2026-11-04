@@ -15,6 +15,8 @@ fi
 
 touch database/database.sqlite
 php artisan migrate --seed --force
+# Namoz vaqtlari odatda har kuni 03:30 da yuklanadi; kompyuterda darhol yuklab olamiz.
+php artisan prayer-times:fetch || echo "Namoz vaqtlarini yuklab bo'lmadi, internetni tekshiring."
 npm run build
 
 exec php artisan serve --host=0.0.0.0 --port=8000

@@ -1,12 +1,16 @@
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import LanguageSwitcher from '../Components/LanguageSwitcher';
+import PhoneInput from '../Components/PhoneInput';
 import { isMiniApp, webApp } from '../telegram/webapp';
 import { t } from '../lib/i18n';
+
+const field = 'mt-1 w-full rounded-lg border border-line px-3 py-2.5 font-normal';
 
 export default function Login({ devLogin = false }) {
     const { errors } = usePage().props;
     const [trying, setTrying] = useState(false);
+    const form = useForm({ phone: '+998', password: '' });
 
     useEffect(() => {
         // Mini App ichida initData bor: avtomatik kiramiz.
@@ -30,9 +34,36 @@ export default function Login({ devLogin = false }) {
                 {trying ? (
                     <p className="mt-3 text-muted">{t("Telegram orqali kirilmoqda...")}</p>
                 ) : (
-                    <p className="mt-3 text-muted">
-                        {t('Ilovani Telegram bot ichidagi "Ilovani ochish" tugmasi orqali oching.')}
-                    </p>
+                    <form
+                        className="mt-5 space-y-2 text-left"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            form.post('/login', { onFinish: () => form.reset('password') });
+                        }}
+                    >
+                        <label className="block text-sm font-semibold text-ink">
+                            {t('Telefon raqam')}
+                            <PhoneInput value={form.data.phone} onChange={(v) => form.setData('phone', v)} className={field} autoFocus />
+                        </label>
+                        <label className="block text-sm font-semibold text-ink">
+                            {t('Parol')}
+                            <input type="password" autoComplete="current-password" value={form.data.password} onChange={(e) => form.setData('password', e.target.value)} className={field} />
+                        </label>
+                        {form.errors.phone && <p className="text-sm font-semibold text-red">{form.errors.phone}</p>}
+                        <button className="w-full rounded-xl bg-g700 py-3 font-bold text-white" disabled={form.processing || !form.data.password}>
+                            {t('Kirish')}
+                        </button>
+                        <p className="pt-1 text-center text-sm text-muted">
+                            {t("Hisobingiz yo'qmi?")}{' '}
+                            <Link href="/register" className="font-bold text-g700">
+                                {t("Ro'yxatdan o'tish")}
+                            </Link>
+                        </p>
+                        <button type="button" onClick={() => router.post('/demo')} className="w-full rounded-xl py-3 font-bold text-g700 ring-1 ring-line">
+                            {t("Demoni ko'rish")}
+                        </button>
+                        <p className="text-center text-xs text-muted">{t('Yoki ilovani Telegram bot ichidagi "Ilovani ochish" tugmasi orqali oching.')}</p>
+                    </form>
                 )}
                 {errors?.init_data && <p className="mt-3 text-sm font-semibold text-red">{errors.init_data}</p>}
                 <LanguageSwitcher className="mt-5" />

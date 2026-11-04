@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { t, tk } from '../lib/i18n';
 
 const TABS = [
@@ -32,6 +32,14 @@ export default function AppLayout({ children }) {
                     </Link>
                 </div>
             </header>
+            {auth?.user?.is_demo && (
+                <div className="mb-4 flex items-center gap-3 rounded-2xl bg-gold/15 px-4 py-3 text-sm">
+                    <p className="min-w-0 flex-1 font-semibold text-ink">{t("Bu demo. Biror narsa qo'shish uchun ro'yxatdan o'ting.")}</p>
+                    <button type="button" onClick={() => router.post('/demo/exit')} className="shrink-0 rounded-lg bg-g700 px-3 py-1.5 font-bold text-white">
+                        {t("Ro'yxatdan o'tish")}
+                    </button>
+                </div>
+            )}
             <main>{children}</main>
 
             <nav className="fixed inset-x-0 bottom-0 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">

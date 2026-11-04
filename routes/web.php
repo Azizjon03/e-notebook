@@ -2,6 +2,10 @@
 
 use App\Modules\Admin\AdminController;
 use App\Modules\Admin\EnsureAdmin;
+use App\Modules\Core\Auth\LoginSettingsController;
+use App\Modules\Core\Auth\PasswordLoginController;
+use App\Modules\Core\Auth\RegisterController;
+use App\Modules\Core\Demo\DemoController;
 use App\Modules\Core\Dev\DevLoginController;
 use App\Modules\Core\I18n\LocaleController;
 use App\Modules\Core\SettingsController;
@@ -23,6 +27,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/auth/telegram/webapp', WebAppLoginController::class)
         ->middleware('throttle:20,1')
         ->name('auth.telegram.webapp');
+    Route::post('/login', [PasswordLoginController::class, 'login'])->middleware('throttle:10,1')->name('login.password');
+    Route::get('/register', [RegisterController::class, 'create'])->name('register');
+    Route::post('/demo', [DemoController::class, 'enter'])->middleware('throttle:20,1')->name('demo');
+    Route::post('/register', [RegisterController::class, 'store'])->middleware('throttle:10,1')->name('register.store');
 
     if (DevLoginController::enabled()) {
         Route::post('/auth/dev', DevLoginController::class)->name('auth.dev');
@@ -48,6 +56,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/stats', StatsController::class)->name('stats');
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::put('/settings/login', [LoginSettingsController::class, 'update'])->middleware('throttle:10,1')->name('settings.login');
+    Route::post('/logout', [PasswordLoginController::class, 'logout'])->name('logout');
+    Route::post('/demo/exit', [DemoController::class, 'exit'])->name('demo.exit');
 
     Route::get('/books', [BookController::class, 'index'])->name('books');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');

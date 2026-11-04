@@ -58,6 +58,8 @@ sudo -u enotebook composer install --no-dev --optimize-autoloader
 sudo -u enotebook php artisan key:generate
 sudo -u enotebook npm ci && sudo -u enotebook npm run build
 sudo -u enotebook php artisan migrate --force --seed
+# Namoz vaqtlari: birinchi marta qo'lda, keyin scheduler har kuni o'zi yangilaydi.
+sudo -u enotebook php artisan prayer-times:fetch
 sudo -u enotebook php artisan config:cache && sudo -u enotebook php artisan route:cache
 ```
 
