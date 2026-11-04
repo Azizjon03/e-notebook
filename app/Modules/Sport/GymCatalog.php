@@ -247,14 +247,14 @@ class GymCatalog
     {
         return [
             'key' => $key,
-            'name' => $p['name'],
-            'level' => $p['level'],
+            'name' => __($p['name']),
+            'level' => __($p['level']),
             'recommended' => $p['recommended'],
             'weekdays' => $p['weekdays'],
-            'about' => $p['about'],
+            'about' => __($p['about']),
             'days' => array_map(fn ($d) => [
-                'name' => $d['name'],
-                'exercises' => array_map(fn ($e) => ['name' => $e[0], 'sets' => $e[1], 'reps' => $e[2], 'rest' => $e[3]], $d['exercises']),
+                'name' => __($d['name']),
+                'exercises' => array_map(fn ($e) => ['name' => __($e[0]), 'sets' => $e[1], 'reps' => __($e[2]), 'rest' => $e[3]], $d['exercises']),
             ], $p['days']),
         ];
     }

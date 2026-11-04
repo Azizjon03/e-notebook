@@ -49,7 +49,7 @@ class GymController
         $history = GymWorkout::whereNotNull('finished_at')->latest('date')->limit(6)->get()
             ->map(fn (GymWorkout $w) => [
                 'date' => $w->date->toDateString(),
-                'day' => GymCatalog::PROGRAMS[$w->program_key]['days'][$w->day_index]['name'] ?? '',
+                'day' => __(GymCatalog::PROGRAMS[$w->program_key]['days'][$w->day_index]['name'] ?? ''),
             ]);
 
         return Inertia::render('Gym', [
@@ -65,7 +65,7 @@ class GymController
     {
         $data = $request->validate(['gender' => ['required', Rule::in(['male', 'female'])]]);
         $user = $request->user();
-        abort_if($user->gender !== null, 422, 'Jins allaqachon tanlangan.');
+        abort_if($user->gender !== null, 422, __('Jins allaqachon tanlangan.'));
 
         $user->update(['gender' => $data['gender']]);
 
@@ -79,7 +79,7 @@ class GymController
         $program = GymCatalog::find($data['program'], $user->gender);
 
         if (! $program) {
-            throw ValidationException::withMessages(['program' => 'Bu dastur siz uchun emas.']);
+            throw ValidationException::withMessages(['program' => __('Bu dastur siz uchun emas.')]);
         }
 
         $user->update(['gym_program' => $data['program'], 'gym_day_index' => 0]);
@@ -97,9 +97,9 @@ class GymController
     public function set(Request $request): RedirectResponse
     {
         $user = $request->user();
-        $program = $this->currentProgram($user) ?? abort(422, 'Avval dastur tanlang.');
+        $program = $this->currentProgram($user) ?? abort(422, __('Avval dastur tanlang.'));
         $workout = $this->todaysWorkout($user, $program);
-        abort_if((bool) $workout->finished_at, 422, 'Mashg\'ulot tugatilgan.');
+        abort_if((bool) $workout->finished_at, 422, __("Mashg'ulot tugatilgan."));
 
         $exercises = GymCatalog::PROGRAMS[$workout->program_key]['days'][$workout->day_index]['exercises'];
         $data = $request->validate([
@@ -118,7 +118,7 @@ class GymController
     public function finish(Request $request, HabitPoints $points): RedirectResponse
     {
         $user = $request->user();
-        $program = $this->currentProgram($user) ?? abort(422, 'Avval dastur tanlang.');
+        $program = $this->currentProgram($user) ?? abort(422, __('Avval dastur tanlang.'));
         $workout = $this->todaysWorkout($user, $program);
 
         if ($workout->finished_at) {

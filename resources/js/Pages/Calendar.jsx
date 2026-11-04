@@ -2,18 +2,19 @@ import { Head, Link } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import TaskItem from '../Components/TaskItem';
 import { addDays, addMonths, formatShort, monthTitle, parseDate, weekdayShort } from '../lib/dates';
+import { t, tk } from '../lib/i18n';
 
-const HEAD = ['Du', 'Se', 'Cho', 'Pa', 'Ju', 'Sha', 'Ya'];
+const HEAD = [tk('Du'), tk('Se'), tk('Cho'), tk('Pa'), tk('Ju'), tk('Sha'), tk('Ya')];
 
 function Switcher({ view, anchor }) {
     const cls = (v) => `flex-1 rounded-lg py-1.5 text-center text-sm font-bold ${view === v ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`;
     return (
         <div className="flex rounded-xl bg-g100 p-1">
             <Link href={`/calendar?view=month&date=${anchor}`} className={cls('month')} preserveScroll>
-                Oy
+                {t("Oy")}
             </Link>
             <Link href={`/calendar?view=week&date=${anchor}`} className={cls('week')} preserveScroll>
-                Hafta
+                {t("Hafta")}
             </Link>
         </div>
     );
@@ -22,11 +23,11 @@ function Switcher({ view, anchor }) {
 function Nav({ title, prev, next }) {
     return (
         <div className="mt-4 flex items-center justify-between">
-            <Link href={prev} preserveScroll className="rounded-lg px-3 py-1 text-xl text-ink" aria-label="Oldingi">
+            <Link href={prev} preserveScroll className="rounded-lg px-3 py-1 text-xl text-ink" aria-label={t("Oldingi")}>
                 ‹
             </Link>
             <h1 className="text-xl font-extrabold text-ink">{title}</h1>
-            <Link href={next} preserveScroll className="rounded-lg px-3 py-1 text-xl text-ink" aria-label="Keyingi">
+            <Link href={next} preserveScroll className="rounded-lg px-3 py-1 text-xl text-ink" aria-label={t("Keyingi")}>
                 ›
             </Link>
         </div>
@@ -43,7 +44,7 @@ function MonthView({ days, anchor, month, today }) {
             />
             <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs font-bold text-muted">
                 {HEAD.map((d) => (
-                    <span key={d}>{d}</span>
+                    <span key={d}>{t(d)}</span>
                 ))}
             </div>
             <div className="mt-1 grid grid-cols-7 gap-1">
@@ -108,12 +109,12 @@ function WeekView({ days, anchor, today }) {
                         </Link>
                         {day.tasks.length ? (
                             <ul className="space-y-2">
-                                {day.tasks.map((t) => (
-                                    <TaskItem key={t.id} task={t} />
+                                {day.tasks.map((task) => (
+                                    <TaskItem key={task.id} task={task} />
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-sm text-muted">Vazifa yo'q</p>
+                            <p className="text-sm text-muted">{t("Vazifa yo'q")}</p>
                         )}
                     </section>
                 ))}
@@ -125,13 +126,13 @@ function WeekView({ days, anchor, today }) {
 export default function Calendar({ view, anchor, month, today, days, recurrences }) {
     return (
         <AppLayout>
-            <Head title="Kalendar" />
+            <Head title={t("Kalendar")} />
             <Switcher view={view} anchor={anchor} />
             {view === 'week' ? <WeekView days={days} anchor={anchor} today={today} /> : <MonthView days={days} anchor={anchor} month={month} today={today} />}
 
             {recurrences.length > 0 && (
                 <section className="mt-6 rounded-2xl bg-white p-4 ring-1 ring-line">
-                    <h2 className="mb-2 font-bold text-ink">Takrorlanadigan vazifalar</h2>
+                    <h2 className="mb-2 font-bold text-ink">{t("Takrorlanadigan vazifalar")}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {recurrences.map((r) => (
                             <li key={r.id} className="flex justify-between gap-3 py-2">

@@ -3,6 +3,7 @@
 namespace App\Modules\Admin;
 
 use App\Models\User;
+use App\Modules\Core\I18n\Locale;
 use App\Modules\Planner\Task;
 use App\Modules\Telegram\BotAdmin;
 use App\Modules\Telegram\BotTexts;
@@ -10,6 +11,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -49,13 +51,16 @@ class AdminController
         ]);
     }
 
-    public function bot(BotAdmin $bot, BotTexts $texts): Response
+    public function bot(Request $request, BotAdmin $bot, BotTexts $texts): Response
     {
+        $locale = Locale::valid($request->query('lang'));
+
         return Inertia::render('Admin/Bot', [
             'status' => $bot->status(),
             'secretConfigured' => (string) config('telegram.webhook_secret') !== '',
-            'texts' => $texts->all(),
-            'defaults' => BotTexts::DEFAULTS,
+            'textLocale' => $locale,
+            'texts' => $texts->all($locale),
+            'defaults' => BotTexts::defaults($locale),
             'labels' => BotTexts::LABELS,
             'defaultCommands' => BotAdmin::DEFAULT_COMMANDS,
         ]);
@@ -98,9 +103,9 @@ class AdminController
         $rules = collect(BotTexts::DEFAULTS)->mapWithKeys(fn ($v, $key) => [
             "texts.$key" => ['nullable', 'string', in_array($key, ['app_button', 'menu_button'], true) ? 'max:64' : 'max:2000'],
         ])->all();
-        $data = $request->validate($rules);
+        $data = $request->validate($rules + ['locale' => ['nullable', Rule::in(array_keys(Locale::ALL))]]);
 
-        $texts->save($data['texts'] ?? []);
+        $texts->save($data['texts'] ?? [], $data['locale'] ?? Locale::DEFAULT);
 
         if ($bot->isConfigured()) {
             try {

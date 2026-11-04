@@ -1,5 +1,7 @@
-const MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
-const WEEKDAYS = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
+import { t, tk } from './i18n';
+
+const MONTHS = [tk('yanvar'), tk('fevral'), tk('mart'), tk('aprel'), tk('may'), tk('iyun'), tk('iyul'), tk('avgust'), tk('sentabr'), tk('oktabr'), tk('noyabr'), tk('dekabr')];
+const WEEKDAYS = [tk('Yakshanba'), tk('Dushanba'), tk('Seshanba'), tk('Chorshanba'), tk('Payshanba'), tk('Juma'), tk('Shanba')];
 
 // "2026-11-04" -> Date (mahalliy vaqt zonasiga bog'lanmasdan)
 export function parseDate(iso) {
@@ -15,17 +17,17 @@ export function addDays(iso, days) {
 
 export function formatLong(iso) {
     const d = parseDate(iso);
-    return `${WEEKDAYS[d.getUTCDay()]}, ${d.getUTCDate()}-${MONTHS[d.getUTCMonth()]}`;
+    return t(':weekday, :day-:month', { weekday: t(WEEKDAYS[d.getUTCDay()]), day: d.getUTCDate(), month: t(MONTHS[d.getUTCMonth()]) });
 }
 
 export function formatShort(iso) {
     const d = parseDate(iso);
-    return `${d.getUTCDate()}-${MONTHS[d.getUTCMonth()]}`;
+    return t(':day-:month', { day: d.getUTCDate(), month: t(MONTHS[d.getUTCMonth()]) });
 }
 
 export function monthTitle(iso) {
     const d = parseDate(iso);
-    const name = MONTHS[d.getUTCMonth()];
+    const name = t(MONTHS[d.getUTCMonth()]);
     return `${name[0].toUpperCase()}${name.slice(1)} ${d.getUTCFullYear()}`;
 }
 
@@ -37,5 +39,5 @@ export function addMonths(iso, months) {
 }
 
 export function weekdayShort(iso) {
-    return ['Ya', 'Du', 'Se', 'Cho', 'Pa', 'Ju', 'Sha'][parseDate(iso).getUTCDay()];
+    return t(['Ya', 'Du', 'Se', 'Cho', 'Pa', 'Ju', 'Sha'][parseDate(iso).getUTCDay()]);
 }

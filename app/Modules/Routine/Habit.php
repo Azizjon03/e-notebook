@@ -36,6 +36,12 @@ class Habit extends Model
         return $this->hasMany(DailyEntry::class);
     }
 
+    /** Tizim odatlarining nomi tarjima qilinadi, foydalanuvchi yozgan nom o'zgarmaydi. */
+    public function displayName(): string
+    {
+        return $this->key !== null ? __($this->name) : $this->name;
+    }
+
     public function isPrayer(): bool
     {
         return in_array($this->key, self::PRAYER_KEYS, true);
@@ -65,7 +71,7 @@ class Habit extends Model
         return [
             'id' => $this->id,
             'key' => $this->key,
-            'name' => $this->name,
+            'name' => $this->displayName(),
             'kind' => $this->kind,
             'target' => $this->target,
             'area' => $this->area?->key,

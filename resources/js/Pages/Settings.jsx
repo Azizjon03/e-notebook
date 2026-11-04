@@ -1,14 +1,16 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
+import LanguageSwitcher from '../Components/LanguageSwitcher';
+import { t, tk } from '../lib/i18n';
 
 const DAYS = [
-    [1, 'Dushanba'],
-    [2, 'Seshanba'],
-    [3, 'Chorshanba'],
-    [4, 'Payshanba'],
-    [5, 'Juma'],
-    [6, 'Shanba'],
-    [7, 'Yakshanba'],
+    [1, tk('Dushanba')],
+    [2, tk('Seshanba')],
+    [3, tk('Chorshanba')],
+    [4, tk('Payshanba')],
+    [5, tk('Juma')],
+    [6, tk('Shanba')],
+    [7, tk('Yakshanba')],
 ];
 
 const box = 'rounded-2xl bg-white p-4 ring-1 ring-line space-y-3';
@@ -41,9 +43,14 @@ export default function Settings({ settings, regions }) {
 
     return (
         <AppLayout>
-            <Head title="Sozlamalar" />
-            <h1 className="text-2xl font-extrabold text-ink">Sozlamalar</h1>
+            <Head title={t("Sozlamalar")} />
+            <h1 className="text-2xl font-extrabold text-ink">{t("Sozlamalar")}</h1>
             {flash?.success && <p className="mt-3 rounded-xl bg-g100 px-4 py-2 text-sm font-semibold text-g800">{flash.success}</p>}
+
+            <section className={`mt-4 ${box}`}>
+                <h2 className="font-bold text-ink">{t('Til')}</h2>
+                <LanguageSwitcher className="mt-3" />
+            </section>
 
             <form
                 className="mt-4 space-y-4"
@@ -53,12 +60,12 @@ export default function Settings({ settings, regions }) {
                 }}
             >
                 <section className={box}>
-                    <h2 className="font-bold text-ink">Kunlik rejalashtirish</h2>
+                    <h2 className="font-bold text-ink">{t("Kunlik rejalashtirish")}</h2>
                     <div className="grid grid-cols-3 gap-1 rounded-xl bg-bg p-1 text-sm font-bold">
                         {[
-                            ['evening', 'Kechqurun'],
-                            ['morning', 'Ertalab'],
-                            ['off', "O'chiq"],
+                            ['evening', tk('Kechqurun')],
+                            ['morning', tk('Ertalab')],
+                            ['off', tk("O'chiq")],
                         ].map(([value, label]) => (
                             <button
                                 key={value}
@@ -68,78 +75,78 @@ export default function Settings({ settings, regions }) {
                                 }}
                                 className={`rounded-lg py-2 ${data.planning_mode === value ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`}
                             >
-                                {label}
+                                {t(label)}
                             </button>
                         ))}
                     </div>
                     {data.planning_mode !== 'off' && (
                         <Row
-                            label="Vaqti"
-                            hint={data.planning_mode === 'evening' ? 'Bot ertangi kunni rejalashtirishni eslatadi' : 'Bot bugungi kunni rejalashtirishni eslatadi'}
+                            label={t("Vaqti")}
+                            hint={data.planning_mode === 'evening' ? t('Bot ertangi kunni rejalashtirishni eslatadi') : t('Bot bugungi kunni rejalashtirishni eslatadi')}
                         >
                             <input type="time" value={data.planning_time} onChange={(e) => setData('planning_time', e.target.value)} className={select} />
                         </Row>
                     )}
-                    {data.planning_mode !== 'off' && <p className="text-xs text-muted">Reja tuzilmasa, bot 30 daqiqadan keyin yana bir marta eslatadi.</p>}
+                    {data.planning_mode !== 'off' && <p className="text-xs text-muted">{t("Reja tuzilmasa, bot 30 daqiqadan keyin yana bir marta eslatadi.")}</p>}
                 </section>
 
                 <section className={box}>
-                    <h2 className="font-bold text-ink">Haftalik reja</h2>
-                    <Row label="Kuni">
+                    <h2 className="font-bold text-ink">{t("Haftalik reja")}</h2>
+                    <Row label={t("Kuni")}>
                         <select value={data.weekly_planning_day ?? ''} onChange={(e) => setData('weekly_planning_day', e.target.value ? Number(e.target.value) : null)} className={select}>
-                            <option value="">O'chiq</option>
+                            <option value="">{t("O'chiq")}</option>
                             {DAYS.map(([d, label]) => (
                                 <option key={d} value={d}>
-                                    {label}
+                                    {t(label)}
                                 </option>
                             ))}
                         </select>
                     </Row>
                     {data.weekly_planning_day && (
-                        <Row label="Vaqti">
+                        <Row label={t("Vaqti")}>
                             <input type="time" value={data.weekly_planning_time} onChange={(e) => setData('weekly_planning_time', e.target.value)} className={select} />
                         </Row>
                     )}
                 </section>
 
                 <section className={box}>
-                    <h2 className="font-bold text-ink">Eslatmalar</h2>
-                    <Row label="Namoz vaqti" hint="Yoqilgan namozlar uchun">
+                    <h2 className="font-bold text-ink">{t("Eslatmalar")}</h2>
+                    <Row label={t("Namoz vaqti")} hint={t("Yoqilgan namozlar uchun")}>
                         <Switch checked={data.prayer_reminders} onChange={(v) => setData('prayer_reminders', v)} />
                     </Row>
                     {data.prayer_reminders && (
-                        <Row label="Necha daqiqa oldin">
+                        <Row label={t("Necha daqiqa oldin")}>
                             <select value={data.prayer_remind_before} onChange={(e) => setData('prayer_remind_before', Number(e.target.value))} className={select}>
                                 {[0, 5, 10, 15, 20, 30].map((m) => (
                                     <option key={m} value={m}>
-                                        {m ? `${m} daqiqa` : 'Vaqtida'}
+                                        {m ? t(':m daqiqa', { m }) : t('Vaqtida')}
                                     </option>
                                 ))}
                             </select>
                         </Row>
                     )}
-                    <Row label="Vaqtli vazifalar">
+                    <Row label={t("Vaqtli vazifalar")}>
                         <Switch checked={data.task_reminders} onChange={(v) => setData('task_reminders', v)} />
                     </Row>
                     {data.task_reminders && (
-                        <Row label="Necha daqiqa oldin">
+                        <Row label={t("Necha daqiqa oldin")}>
                             <select value={data.task_remind_before} onChange={(e) => setData('task_remind_before', Number(e.target.value))} className={select}>
                                 {[0, 5, 10, 15, 30, 60].map((m) => (
                                     <option key={m} value={m}>
-                                        {m ? `${m} daqiqa` : 'Vaqtida'}
+                                        {m ? t(':m daqiqa', { m }) : t('Vaqtida')}
                                     </option>
                                 ))}
                             </select>
                         </Row>
                     )}
-                    <Row label="Kun yakuni" hint="Har kuni 21:30 da qisqa xulosa">
+                    <Row label={t("Kun yakuni")} hint={t("Har kuni 21:30 da qisqa xulosa")}>
                         <Switch checked={data.day_summary} onChange={(v) => setData('day_summary', v)} />
                     </Row>
                 </section>
 
                 <section className={box}>
-                    <h2 className="font-bold text-ink">Mintaqa</h2>
-                    <Row label="Viloyat" hint="Namoz vaqtlari shu bo'yicha">
+                    <h2 className="font-bold text-ink">{t("Mintaqa")}</h2>
+                    <Row label={t("Viloyat")} hint={t("Namoz vaqtlari shu bo'yicha")}>
                         <select value={data.region_id ?? ''} onChange={(e) => setData('region_id', Number(e.target.value))} className={`${select} max-w-44`}>
                             {regions.map((r) => (
                                 <option key={r.id} value={r.id}>
@@ -153,7 +160,7 @@ export default function Settings({ settings, regions }) {
                 {Object.values(form.errors).length > 0 && <p className="text-sm font-semibold text-red">{Object.values(form.errors)[0]}</p>}
 
                 <button className="w-full rounded-xl bg-g700 py-3 font-bold text-white" disabled={form.processing}>
-                    Saqlash
+                    {t("Saqlash")}
                 </button>
             </form>
         </AppLayout>

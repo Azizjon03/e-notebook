@@ -28,7 +28,7 @@ class PrayerTime extends Model
     public function toList(): array
     {
         return collect(self::NAMES)
-            ->map(fn ($name, $key) => ['key' => $key, 'name' => $name, 'time' => $this->{$key}])
+            ->map(fn ($name, $key) => ['key' => $key, 'name' => __($name), 'time' => $this->{$key}])
             ->values()
             ->all();
     }

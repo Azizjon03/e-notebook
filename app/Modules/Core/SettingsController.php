@@ -39,6 +39,6 @@ class SettingsController
 
         $request->user()->update($data);
 
-        return back()->with('success', 'Sozlamalar saqlandi.');
+        return back()->with('success', __('Sozlamalar saqlandi.'));
     }
 }

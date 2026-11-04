@@ -26,7 +26,7 @@ class HabitController
             'habits' => $habits->map(fn (Habit $h) => [
                 'id' => $h->id,
                 'key' => $h->key,
-                'name' => $h->name,
+                'name' => $h->displayName(),
                 'kind' => $h->kind,
                 'target' => $h->target,
                 'weekdays' => $h->weekdays,
@@ -50,7 +50,7 @@ class HabitController
             'target' => ['nullable', 'required_unless:kind,check', 'integer', 'min:1', 'max:1000000'],
             'weekdays' => ['nullable', 'array'],
             'weekdays.*' => ['integer', 'between:1,7'],
-        ], ['name.required' => 'Odat nomini yozing.', 'target.required_unless' => 'Maqsadni kiriting.']);
+        ], ['name.required' => __('Odat nomini yozing.'), 'target.required_unless' => __('Maqsadni kiriting.')]);
 
         Habit::create([
             'name' => $data['name'],
@@ -88,7 +88,7 @@ class HabitController
     public function destroy(Habit $habit): RedirectResponse
     {
         // Tizim odatlari o'chirilmaydi, faqat o'chirib qo'yiladi (is_active).
-        abort_if($habit->key !== null, 422, 'Bu odatni faqat o\'chirib qo\'yish mumkin.');
+        abort_if($habit->key !== null, 422, __("Bu odatni faqat o'chirib qo'yish mumkin."));
         $habit->delete();
 
         return back();
@@ -106,7 +106,7 @@ class HabitController
 
         // Kelajak kunni belgilab bo'lmaydi.
         $today = CarbonImmutable::now($request->user()->timezone)->toDateString();
-        abort_if($data['date'] > $today, 422, 'Kelajak kunni belgilab bo\'lmaydi.');
+        abort_if($data['date'] > $today, 422, __("Kelajak kunni belgilab bo'lmaydi."));
 
         $entry = DailyEntry::firstOrNew(['habit_id' => $habit->id, 'date' => $data['date']]);
 

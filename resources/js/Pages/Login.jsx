@@ -1,6 +1,8 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import LanguageSwitcher from '../Components/LanguageSwitcher';
 import { isMiniApp, webApp } from '../telegram/webapp';
+import { t } from '../lib/i18n';
 
 export default function Login({ devLogin = false }) {
     const { errors } = usePage().props;
@@ -19,29 +21,30 @@ export default function Login({ devLogin = false }) {
 
     return (
         <div className="mx-auto grid min-h-screen max-w-md place-items-center px-4">
-            <Head title="Kirish" />
+            <Head title={t("Kirish")} />
             <div className="w-full rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-line">
                 <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-g700 text-2xl font-extrabold text-white">
                     e
                 </span>
                 <h1 className="mt-4 text-2xl font-extrabold text-ink">e-notebook</h1>
                 {trying ? (
-                    <p className="mt-3 text-muted">Telegram orqali kirilmoqda...</p>
+                    <p className="mt-3 text-muted">{t("Telegram orqali kirilmoqda...")}</p>
                 ) : (
                     <p className="mt-3 text-muted">
-                        Ilovani Telegram bot ichidagi "Ilovani ochish" tugmasi orqali oching.
+                        {t('Ilovani Telegram bot ichidagi "Ilovani ochish" tugmasi orqali oching.')}
                     </p>
                 )}
                 {errors?.init_data && <p className="mt-3 text-sm font-semibold text-red">{errors.init_data}</p>}
+                <LanguageSwitcher className="mt-5" />
                 {devLogin && !trying && (
                     <div className="mt-6 border-t border-line pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Faqat kompyuterda sinash uchun</p>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted">{t("Faqat kompyuterda sinash uchun")}</p>
                         <div className="mt-3 grid grid-cols-2 gap-2">
                             <button type="button" onClick={() => router.post('/auth/dev', { gender: 'male' })} className="rounded-xl bg-g700 py-2.5 text-sm font-bold text-white">
-                                Erkak sifatida
+                                {t("Erkak sifatida")}
                             </button>
                             <button type="button" onClick={() => router.post('/auth/dev', { gender: 'female' })} className="rounded-xl bg-g700 py-2.5 text-sm font-bold text-white">
-                                Ayol sifatida
+                                {t("Ayol sifatida")}
                             </button>
                         </div>
                     </div>

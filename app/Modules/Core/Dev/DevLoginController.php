@@ -36,6 +36,9 @@ class DevLoginController
             'timezone' => 'Asia/Tashkent',
             'onboarding_step' => 'done',
         ]);
+        if ($request->session()->has('locale')) {
+            $user->update(['locale' => $request->session()->get('locale')]);
+        }
         HabitDefaults::ensure($user);
 
         Auth::login($user, remember: true);

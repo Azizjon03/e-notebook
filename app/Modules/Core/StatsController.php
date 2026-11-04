@@ -62,7 +62,7 @@ class StatsController
             $scheduled = collect(CarbonPeriodImmutable::create($from, $to))->filter(fn ($d) => $h->isScheduledOn($d))->count();
             $done = $entries->where('habit_id', $h->id)->count();
 
-            return ['name' => $h->name, 'done' => $done, 'scheduled' => $scheduled];
+            return ['name' => $h->displayName(), 'done' => $done, 'scheduled' => $scheduled];
         })->values();
 
         $totalTasks = $days->sum('tasks_total');

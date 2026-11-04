@@ -43,6 +43,7 @@ class User extends Authenticatable
         'day_summary',
         'gym_program',
         'gym_day_index',
+        'locale',
     ];
 
     /**

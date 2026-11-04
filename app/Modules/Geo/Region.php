@@ -2,11 +2,18 @@
 
 namespace App\Modules\Geo;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Region extends Model
 {
     protected $guarded = [];
+
+    /** Nom bazada o'zbekcha saqlanadi, chiqishda joriy tilga tarjima qilinadi. */
+    protected function name(): Attribute
+    {
+        return Attribute::get(fn (string $value) => __($value));
+    }
 
     protected function casts(): array
     {

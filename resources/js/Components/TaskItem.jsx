@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { haptic } from '../telegram/webapp';
 import { formatShort } from '../lib/dates';
+import { t } from '../lib/i18n';
 
 export default function TaskItem({ task }) {
     const opts = { preserveScroll: true };
@@ -15,7 +16,7 @@ export default function TaskItem({ task }) {
             <button
                 type="button"
                 onClick={toggle}
-                aria-label={task.done ? 'Bajarilmagan deb belgilash' : 'Bajarildi deb belgilash'}
+                aria-label={task.done ? t('Bajarilmagan deb belgilash') : t('Bajarildi deb belgilash')}
                 className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition ${
                     task.done ? 'border-g700 bg-g700 text-white' : 'border-line bg-white hover:border-g500'
                 }`}
@@ -36,8 +37,8 @@ export default function TaskItem({ task }) {
                             {task.end_time && `–${task.end_time}`}
                         </span>
                     )}
-                    {task.recurring && <span className="rounded-full bg-blue/10 px-2 py-0.5 text-blue">Takrorlanadi</span>}
-                    {task.moved_from && <span>{formatShort(task.moved_from)} dan ko'chirildi</span>}
+                    {task.recurring && <span className="rounded-full bg-blue/10 px-2 py-0.5 text-blue">{t('Takrorlanadi')}</span>}
+                    {task.moved_from && <span>{t(":date dan ko'chirildi", { date: formatShort(task.moved_from) })}</span>}
                 </div>
             </div>
 
@@ -48,20 +49,20 @@ export default function TaskItem({ task }) {
                         onClick={() => router.post(`/tasks/${task.id}/move-tomorrow`, {}, opts)}
                         className="rounded-lg px-2 py-1 text-xs font-semibold text-blue hover:bg-bg"
                     >
-                        Ertaga
+                        {t('Ertaga')}
                     </button>
                 )}
                 <button
                     type="button"
                     onClick={() => {
                         // Takrorlanadigan vazifa: faqat shu kunmi yoki keyingilari ham?
-                        const all = task.recurring && window.confirm('Keyingi kunlardagi takrorlarini ham o\'chiraymi? (Bekor = faqat shu kun)');
+                        const all = task.recurring && window.confirm(t("Keyingi kunlardagi takrorlarini ham o'chiraymi? (Bekor = faqat shu kun)"));
                         router.delete(`/tasks/${task.id}${all ? '?scope=all' : ''}`, opts);
                     }}
-                    aria-label="O'chirish"
+                    aria-label={t("O'chirish")}
                     className="rounded-lg px-2 py-1 text-xs font-semibold text-red hover:bg-bg"
                 >
-                    O'chirish
+                    {t("O'chirish")}
                 </button>
             </div>
         </li>

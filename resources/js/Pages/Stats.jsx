@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import LevelBar from '../Components/LevelBar';
 import { parseDate, weekdayShort } from '../lib/dates';
+import { t } from '../lib/i18n';
 
 function Tile({ label, value, hint }) {
     return (
@@ -44,14 +45,14 @@ export default function Stats({ range, days, summary, habits, level }) {
 
     return (
         <AppLayout>
-            <Head title="Statistika" />
-            <h1 className="text-2xl font-extrabold text-ink">Statistika</h1>
+            <Head title={t("Statistika")} />
+            <h1 className="text-2xl font-extrabold text-ink">{t("Statistika")}</h1>
             <div className="mt-3 flex rounded-xl bg-g100 p-1">
                 <Link href="/stats?range=7" className={tab(7)} preserveScroll>
-                    7 kun
+                    {t("7 kun")}
                 </Link>
                 <Link href="/stats?range=30" className={tab(30)} preserveScroll>
-                    30 kun
+                    {t("30 kun")}
                 </Link>
             </div>
 
@@ -60,20 +61,20 @@ export default function Stats({ range, days, summary, habits, level }) {
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-2">
-                <Tile label="Vazifalar" value={summary.tasks_rate === null ? '—' : `${summary.tasks_rate}%`} hint={`${summary.tasks_done} ta bajarildi`} />
-                <Tile label="Namoz" value={`${summary.prayers}/${summary.prayers_possible}`} />
-                <Tile label="O'qish" value={`${(summary.study_minutes / 60).toFixed(1)} soat`} hint={`${summary.study_minutes} daqiqa`} />
-                <Tile label="Ball" value={`+${summary.points}`} hint={summary.pages ? `${summary.pages} bet kitob` : null} />
+                <Tile label={t("Vazifalar")} value={summary.tasks_rate === null ? '—' : `${summary.tasks_rate}%`} hint={t(':count ta bajarildi', { count: summary.tasks_done })} />
+                <Tile label={t("Namoz")} value={`${summary.prayers}/${summary.prayers_possible}`} />
+                <Tile label={t("O'qish")} value={t(':h soat', { h: (summary.study_minutes / 60).toFixed(1) })} hint={t(':m daqiqa', { m: summary.study_minutes })} />
+                <Tile label={t("Ball")} value={`+${summary.points}`} hint={summary.pages ? t(':pages bet kitob', { pages: summary.pages }) : null} />
             </div>
 
-            <Bars title="Bajarilgan vazifalar" days={days} value={(d) => d.tasks_done} unit="ta" range={range} />
-            <Bars title="Namoz" days={days} value={(d) => d.prayers} max={5} unit="ta" color="bg-g700" range={range} />
-            <Bars title="O'qish, daqiqa" days={days} value={(d) => d.study} unit="daq" color="bg-blue" range={range} />
-            <Bars title="Ball" days={days} value={(d) => d.points} unit="ball" color="bg-gold" range={range} />
+            <Bars title={t("Bajarilgan vazifalar")} days={days} value={(d) => d.tasks_done} unit={t("ta")} range={range} />
+            <Bars title={t("Namoz")} days={days} value={(d) => d.prayers} max={5} unit={t("ta")} color="bg-g700" range={range} />
+            <Bars title={t("O'qish, daqiqa")} days={days} value={(d) => d.study} unit={t("daq")} color="bg-blue" range={range} />
+            <Bars title={t("Ball")} days={days} value={(d) => d.points} unit={t("ball")} color="bg-gold" range={range} />
 
             {habits.length > 0 && (
                 <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
-                    <h2 className="mb-3 font-bold text-ink">Odatlar</h2>
+                    <h2 className="mb-3 font-bold text-ink">{t("Odatlar")}</h2>
                     <ul className="space-y-3">
                         {habits.map((h) => {
                             const pct = h.scheduled ? Math.round((h.done / h.scheduled) * 100) : 0;
@@ -82,7 +83,7 @@ export default function Stats({ range, days, summary, habits, level }) {
                                     <div className="flex justify-between text-sm">
                                         <span className="font-semibold text-ink">{h.name}</span>
                                         <span className="text-muted">
-                                            {h.done}/{h.scheduled} kun
+                                            {t(':done/:scheduled kun', { done: h.done, scheduled: h.scheduled })}
                                         </span>
                                     </div>
                                     <div className="mt-1 h-2 rounded-full bg-bg">
