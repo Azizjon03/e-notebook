@@ -1,7 +1,5 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
-import LanguageSwitcher from '../Components/LanguageSwitcher';
-import ThemeSwitcher from '../Components/ThemeSwitcher';
 import PhoneInput, { formatPhone } from '../Components/PhoneInput';
 import { t, tk } from '../lib/i18n';
 
@@ -91,12 +89,6 @@ export default function Settings({ settings, regions, login }) {
             <h1 className="text-2xl font-extrabold text-ink">{t("Sozlamalar")}</h1>
             {flash?.success && <p className="mt-3 rounded-xl bg-g100 px-4 py-2 text-sm font-semibold text-g800">{flash.success}</p>}
 
-            <section className={`mt-4 ${box}`}>
-                <h2 className="font-bold text-ink">{t('Til')}</h2>
-                <LanguageSwitcher className="mt-3" />
-                <h2 className="pt-2 font-bold text-ink">{t('Mavzu')}</h2>
-                <ThemeSwitcher />
-            </section>
 
             <LoginCard login={login} />
 

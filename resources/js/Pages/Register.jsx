@@ -1,5 +1,5 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import LanguageSwitcher from '../Components/LanguageSwitcher';
+import HeaderControls from '../Components/HeaderControls';
 import PhoneInput from '../Components/PhoneInput';
 import { t } from '../lib/i18n';
 
@@ -25,9 +25,11 @@ export default function Register({ regions }) {
         <div className="mx-auto max-w-md px-4 py-8">
             <Head title={t("Ro'yxatdan o'tish")} />
             <div className="rounded-2xl bg-card p-6 shadow-sm ring-1 ring-line">
-                <h1 className="text-2xl font-extrabold text-ink">{t("Ro'yxatdan o'tish")}</h1>
+                <div className="flex items-center justify-between gap-2">
+                    <h1 className="text-2xl font-extrabold text-ink">{t("Ro'yxatdan o'tish")}</h1>
+                    <HeaderControls />
+                </div>
                 {flash?.error && <p className="mt-3 rounded-xl bg-gold/15 px-4 py-2 text-sm font-semibold text-ink">{flash.error}</p>}
-                <LanguageSwitcher className="mt-4" />
                 <form
                     className="mt-5 space-y-3"
                     onSubmit={(e) => {

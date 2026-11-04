@@ -1,9 +1,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
-import LanguageSwitcher from '../Components/LanguageSwitcher';
 import LevelBar from '../Components/LevelBar';
 import { formatPhone } from '../Components/PhoneInput';
-import ThemeSwitcher from '../Components/ThemeSwitcher';
 import { formatShort } from '../lib/dates';
 import { t } from '../lib/i18n';
 import { initials } from '../lib/initials';
@@ -99,11 +97,6 @@ export default function Profile({ profile, level, totals }) {
                 </button>
             </form>
 
-            <section className={box}>
-                <h2 className="font-bold text-ink">{t("Ko'rinish")}</h2>
-                <ThemeSwitcher className="mt-3" />
-                <LanguageSwitcher className="mt-2" />
-            </section>
 
             <nav className={`${box} divide-y divide-line py-1`}>
                 <NavRow href="/stats" label={t('Statistika')} />

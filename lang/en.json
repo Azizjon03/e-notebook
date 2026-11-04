@@ -387,9 +387,6 @@
     "O'qish, soat": "Study, hours",
     "Tugatilgan kitob": "Books finished",
     "Ma'lumotlarim": "My details",
-    "Ko'rinish": "Appearance",
-    "Mavzu": "Theme",
-    "Yorug'": "Light",
-    "Tungi": "Dark",
-    "Tizim": "System"
+    "Yorug' rejim": "Light mode",
+    "Tungi rejim": "Dark mode"
 }

@@ -1,6 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { t, tk } from '../lib/i18n';
 import { initials } from '../lib/initials';
+import HeaderControls from './HeaderControls';
 
 const TABS = [
     { href: '/', label: tk('Bugun'), match: (url) => url === '/' || url.startsWith('/?') },
@@ -25,6 +26,7 @@ export default function AppLayout({ children }) {
                             Admin
                         </Link>
                     )}
+                    <HeaderControls />
                     <Link
                         href="/profile"
                         aria-label={t('Profil')}
