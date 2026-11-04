@@ -5,7 +5,7 @@ const STEP = { name: 'Ism kutilmoqda', location: 'Joylashuv kutilmoqda', gender:
 
 function Stat({ label, value, hint }) {
     return (
-        <div className="rounded-2xl bg-white p-4 ring-1 ring-line">
+        <div className="rounded-2xl bg-card p-4 ring-1 ring-line">
             <p className="text-sm font-medium text-muted">{label}</p>
             <p className="mt-1 text-3xl font-extrabold text-ink">{value}</p>
             {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}

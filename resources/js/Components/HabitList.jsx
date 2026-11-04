@@ -23,7 +23,7 @@ function CountHabit({ habit, date, canMark }) {
                     {habit.kind === 'duration' && ' daq'}
                 </span>
             </div>
-            <div className="mt-2 h-1.5 rounded-full bg-white">
+            <div className="mt-2 h-1.5 rounded-full bg-card">
                 <div className={`h-full rounded-full ${habit.done ? 'bg-g700' : 'bg-g500'}`} style={{ width: `${percent}%` }} />
             </div>
             {canMark && (
@@ -31,7 +31,7 @@ function CountHabit({ habit, date, canMark }) {
                     <NumberInput
                         value={value}
                         onChange={setValue}
-                        className="min-w-0 flex-1 rounded-lg border border-line bg-white px-2 py-1.5 text-sm"
+                        className="min-w-0 flex-1 rounded-lg border border-line bg-card px-2 py-1.5 text-sm"
                         placeholder={habit.kind === 'duration' ? t('Daqiqa') : t('Soni')}
                     />
                     <button className="rounded-lg bg-g700 px-3 text-sm font-bold text-white">{t("Saqlash")}</button>
@@ -57,7 +57,7 @@ function CheckHabit({ habit, date, canMark }) {
                     habit.done ? 'bg-g100 text-g800' : 'bg-bg text-ink'
                 }`}
             >
-                <span className={`grid h-5 w-5 place-items-center rounded-full border-2 ${habit.done ? 'border-g700 bg-g700 text-white' : 'border-line bg-white'}`}>
+                <span className={`grid h-5 w-5 place-items-center rounded-full border-2 ${habit.done ? 'border-g700 bg-g700 text-white' : 'border-line bg-card'}`}>
                     {habit.done && '✓'}
                 </span>
                 {habit.name}
@@ -76,7 +76,7 @@ export default function HabitList({ habits, date, canMark }) {
     if (!others.length) return null;
 
     return (
-        <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+        <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
             <div className="mb-3 flex items-baseline justify-between">
                 <h2 className="font-bold text-ink">{t("Odatlar")}</h2>
                 <Link href="/habits" className="text-sm font-semibold text-g700">

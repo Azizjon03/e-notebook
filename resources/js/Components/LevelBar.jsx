@@ -2,7 +2,7 @@ import { t } from '../lib/i18n';
 export default function LevelBar({ level, pointsToday = 0 }) {
     const percent = Math.round((level.into / level.needed) * 100);
     return (
-        <section className="flex items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">
+        <section className="flex items-center gap-3 rounded-2xl bg-card p-4 ring-1 ring-line">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/15 text-xl font-extrabold text-gold">{level.level}</span>
             <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between text-sm">

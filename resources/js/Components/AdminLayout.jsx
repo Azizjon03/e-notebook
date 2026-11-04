@@ -11,7 +11,7 @@ export default function AdminLayout({ title, children }) {
 
     return (
         <div className="min-h-screen bg-bg">
-            <header className="border-b border-line bg-white">
+            <header className="border-b border-line bg-card">
                 <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-4 py-3">
                     <span className="flex items-center gap-2 font-bold text-ink">
                         <span className="grid h-8 w-8 place-items-center rounded-lg bg-g700 font-extrabold text-white">e</span>
@@ -51,7 +51,7 @@ export default function AdminLayout({ title, children }) {
 
 export function Card({ title, children, className = '' }) {
     return (
-        <section className={`rounded-2xl bg-white p-5 ring-1 ring-line ${className}`}>
+        <section className={`rounded-2xl bg-card p-5 ring-1 ring-line ${className}`}>
             {title && <h2 className="mb-4 text-lg font-bold text-ink">{title}</h2>}
             {children}
         </section>

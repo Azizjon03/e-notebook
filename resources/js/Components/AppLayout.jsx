@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { t, tk } from '../lib/i18n';
+import { initials } from '../lib/initials';
 
 const TABS = [
     { href: '/', label: tk('Bugun'), match: (url) => url === '/' || url.startsWith('/?') },
@@ -24,6 +25,13 @@ export default function AppLayout({ children }) {
                             Admin
                         </Link>
                     )}
+                    <Link
+                        href="/profile"
+                        aria-label={t('Profil')}
+                        className={`grid h-9 w-9 place-items-center rounded-full text-sm font-extrabold ${url.startsWith('/profile') ? 'bg-g700 text-white' : 'bg-g100 text-g800'}`}
+                    >
+                        {initials(auth?.user?.first_name, auth?.user?.last_name)}
+                    </Link>
                     <Link href="/settings" aria-label={t("Sozlamalar")} className="grid h-9 w-9 place-items-center rounded-lg text-muted ring-1 ring-line">
                         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="12" cy="12" r="3" />
@@ -42,7 +50,7 @@ export default function AppLayout({ children }) {
             )}
             <main>{children}</main>
 
-            <nav className="fixed inset-x-0 bottom-0 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
+            <nav className="fixed inset-x-0 bottom-0 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
                 <div className="mx-auto flex max-w-md">
                     {TABS.map((tab) => {
                         const active = tab.match(url);

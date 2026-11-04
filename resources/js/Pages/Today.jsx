@@ -56,7 +56,7 @@ export default function Today({ date, today, tasks, stats, overdue, prayers, hab
             <PrayerTimes prayers={prayers} habits={habits} date={date} now={now} isToday={isToday} canMark={canMark} />
 
             {overdue > 0 && (
-                <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-gold/30">
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-card p-4 ring-1 ring-gold/30">
                     <p className="text-sm text-ink">
                         {t("O'tgan kunlardan :count ta bajarilmagan vazifa qoldi.", { count: overdue })}
                     </p>

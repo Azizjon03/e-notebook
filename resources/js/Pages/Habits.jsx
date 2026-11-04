@@ -41,7 +41,7 @@ function DayPicker({ value, onChange }) {
 function HabitRow({ habit }) {
     const [target, setTarget] = useState(String(habit.target ?? ''));
     return (
-        <li className={`rounded-2xl bg-white p-4 ring-1 ring-line ${habit.is_active ? '' : 'opacity-60'}`}>
+        <li className={`rounded-2xl bg-card p-4 ring-1 ring-line ${habit.is_active ? '' : 'opacity-60'}`}>
             <div className="flex items-center gap-3">
                 <div className="min-w-0 flex-1">
                     <p className="font-bold text-ink">{habit.name}</p>
@@ -109,7 +109,7 @@ function AddHabit({ areas }) {
                 e.preventDefault();
                 form.post('/habits', { preserveScroll: true, onSuccess: () => form.reset() });
             }}
-            className="space-y-3 rounded-2xl bg-white p-4 text-sm ring-1 ring-line"
+            className="space-y-3 rounded-2xl bg-card p-4 text-sm ring-1 ring-line"
         >
             <h2 className="text-base font-bold text-ink">{t("Yangi odat")}</h2>
             <input
@@ -120,14 +120,14 @@ function AddHabit({ areas }) {
                 className="w-full rounded-xl border border-line bg-bg px-3 py-2.5 text-base"
             />
             <div className="flex gap-2">
-                <select value={form.data.area} onChange={(e) => form.setData('area', e.target.value)} className="flex-1 rounded-lg border border-line bg-white px-2 py-2">
+                <select value={form.data.area} onChange={(e) => form.setData('area', e.target.value)} className="flex-1 rounded-lg border border-line bg-card px-2 py-2">
                     {areas.map((a) => (
                         <option key={a.key} value={a.key}>
                             {a.name}
                         </option>
                     ))}
                 </select>
-                <select value={form.data.kind} onChange={(e) => form.setData('kind', e.target.value)} className="flex-1 rounded-lg border border-line bg-white px-2 py-2">
+                <select value={form.data.kind} onChange={(e) => form.setData('kind', e.target.value)} className="flex-1 rounded-lg border border-line bg-card px-2 py-2">
                     {Object.entries(KINDS).map(([k, label]) => (
                         <option key={k} value={k}>
                             {t(label)}

@@ -3,7 +3,7 @@ import LanguageSwitcher from '../Components/LanguageSwitcher';
 import PhoneInput from '../Components/PhoneInput';
 import { t } from '../lib/i18n';
 
-const field = 'mt-1 w-full rounded-lg border border-line bg-white px-3 py-2.5 font-normal';
+const field = 'mt-1 w-full rounded-lg border border-line bg-card px-3 py-2.5 font-normal';
 
 function Field({ label, error, children }) {
     return (
@@ -24,7 +24,7 @@ export default function Register({ regions }) {
     return (
         <div className="mx-auto max-w-md px-4 py-8">
             <Head title={t("Ro'yxatdan o'tish")} />
-            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-line">
+            <div className="rounded-2xl bg-card p-6 shadow-sm ring-1 ring-line">
                 <h1 className="text-2xl font-extrabold text-ink">{t("Ro'yxatdan o'tish")}</h1>
                 {flash?.error && <p className="mt-3 rounded-xl bg-gold/15 px-4 py-2 text-sm font-semibold text-ink">{flash.error}</p>}
                 <LanguageSwitcher className="mt-4" />
@@ -59,7 +59,7 @@ export default function Register({ regions }) {
                                 ['male', t('Erkak')],
                                 ['female', t('Ayol')],
                             ].map(([value, label]) => (
-                                <button key={value} type="button" onClick={() => setData('gender', value)} className={`rounded-lg py-2 ${data.gender === value ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`}>
+                                <button key={value} type="button" onClick={() => setData('gender', value)} className={`rounded-lg py-2 ${data.gender === value ? 'bg-card text-g800 shadow-sm' : 'text-muted'}`}>
                                     {label}
                                 </button>
                             ))}

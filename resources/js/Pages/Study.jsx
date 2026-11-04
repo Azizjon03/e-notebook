@@ -43,7 +43,7 @@ function Timer({ running }) {
             <button
                 type="button"
                 onClick={() => router.post(`/study/${running.id}/stop`, {}, { preserveScroll: true })}
-                className="mt-5 rounded-xl bg-white px-6 py-3 font-bold text-g800"
+                className="mt-5 rounded-xl bg-white px-6 py-3 font-bold text-g700"
             >
                 {t("Tugatish")}
             </button>
@@ -60,7 +60,7 @@ function StartForm({ areas }) {
                 haptic('medium');
                 form.post('/study/start', { preserveScroll: true });
             }}
-            className="space-y-3 rounded-2xl bg-white p-5 ring-1 ring-line"
+            className="space-y-3 rounded-2xl bg-card p-5 ring-1 ring-line"
         >
             <h2 className="text-lg font-bold text-ink">{t("Yangi sessiya")}</h2>
             <input
@@ -71,7 +71,7 @@ function StartForm({ areas }) {
                 className="w-full rounded-xl border border-line bg-bg px-3 py-2.5"
             />
             <div className="flex gap-2">
-                <select value={form.data.area} onChange={(e) => form.setData('area', e.target.value)} className="flex-1 rounded-lg border border-line bg-white px-2 py-2 text-sm">
+                <select value={form.data.area} onChange={(e) => form.setData('area', e.target.value)} className="flex-1 rounded-lg border border-line bg-card px-2 py-2 text-sm">
                     {areas.map((a) => (
                         <option key={a.key} value={a.key}>
                             {a.name}
@@ -84,7 +84,7 @@ function StartForm({ areas }) {
                             key={m}
                             type="button"
                             onClick={() => form.setData('planned_minutes', m)}
-                            className={`rounded-md px-3 py-1 ${form.data.planned_minutes === m ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`}
+                            className={`rounded-md px-3 py-1 ${form.data.planned_minutes === m ? 'bg-card text-g800 shadow-sm' : 'text-muted'}`}
                         >
                             {t(':m daq', { m })}
                         </button>
@@ -108,7 +108,7 @@ export default function Study({ running, today, week, level, pointsToday, recent
 
             <div className="mt-4">{running ? <Timer running={running} /> : <StartForm areas={areas} />}</div>
 
-            <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+            <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
                 <div className="mb-3 flex items-baseline justify-between">
                     <h2 className="font-bold text-ink">{t("Oxirgi 7 kun")}</h2>
                     <Link href="/stats" className="text-sm font-semibold text-g700">
@@ -127,7 +127,7 @@ export default function Study({ running, today, week, level, pointsToday, recent
             </section>
 
             {today.length > 0 && (
-                <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+                <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
                     <h2 className="mb-2 font-bold text-ink">{t("Bugungi sessiyalar")}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {today.map((s) => (
@@ -145,7 +145,7 @@ export default function Study({ running, today, week, level, pointsToday, recent
             )}
 
             {recent.length > 0 && (
-                <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+                <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
                     <h2 className="mb-2 font-bold text-ink">{t("Oxirgi ballar")}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {recent.map((r, i) => (

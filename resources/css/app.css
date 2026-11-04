@@ -13,10 +13,31 @@
     --color-g500: #3baf72;
     --color-g100: #e8f5ec;
     --color-bg: #f4f8f5;
+    --color-card: #ffffff;
     --color-ink: #13241a;
     --color-muted: #536259;
     --color-line: #dce5df;
     --color-gold: #8a6414;
     --color-blue: #2f5f94;
     --color-red: #b3261e;
+}
+
+/*
+ * Tungi rejim: <html class="dark">. Ranglar o'zgaruvchi bo'lgani uchun
+ * komponentlarda alohida dark: klasslari kerak emas.
+ */
+:root.dark {
+    color-scheme: dark;
+    --color-g800: #9ee0b8;
+    --color-g700: #2a9d60;
+    --color-g500: #46c283;
+    --color-g100: #183224;
+    --color-bg: #0e1511;
+    --color-card: #17211b;
+    --color-ink: #e6efe9;
+    --color-muted: #9aaba1;
+    --color-line: #2a3830;
+    --color-gold: #e0b45a;
+    --color-blue: #7fb0e6;
+    --color-red: #f2867e;
 }

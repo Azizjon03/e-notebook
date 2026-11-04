@@ -379,5 +379,17 @@
     "Jins": "Gender",
     "Tanlang": "Choose",
     "Hisobingiz bormi?": "Already have an account?",
-    "Bu demo. Biror narsa qo'shish uchun ro'yxatdan o'ting.": "This is a demo. Sign up to add anything."
+    "Bu demo. Biror narsa qo'shish uchun ro'yxatdan o'ting.": "This is a demo. Sign up to add anything.",
+    "Profil saqlandi.": "Profile saved.",
+    "Profil": "Profile",
+    ":date dan beri": "Since :date",
+    "Bajarilgan vazifa": "Tasks done",
+    "O'qish, soat": "Study, hours",
+    "Tugatilgan kitob": "Books finished",
+    "Ma'lumotlarim": "My details",
+    "Ko'rinish": "Appearance",
+    "Mavzu": "Theme",
+    "Yorug'": "Light",
+    "Tungi": "Dark",
+    "Tizim": "System"
 }

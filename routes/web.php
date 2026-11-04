@@ -8,6 +8,7 @@ use App\Modules\Core\Auth\RegisterController;
 use App\Modules\Core\Demo\DemoController;
 use App\Modules\Core\Dev\DevLoginController;
 use App\Modules\Core\I18n\LocaleController;
+use App\Modules\Core\ProfileController;
 use App\Modules\Core\SettingsController;
 use App\Modules\Core\StatsController;
 use App\Modules\Ilm\BookController;
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/gym/finish', [GymController::class, 'finish'])->name('gym.finish');
 
     Route::get('/stats', StatsController::class)->name('stats');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('/settings/login', [LoginSettingsController::class, 'update'])->middleware('throttle:10,1')->name('settings.login');

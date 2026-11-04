@@ -25,7 +25,7 @@ export default function PrayerTimes({ prayers, habits, date, now, isToday, canMa
     };
 
     return (
-        <section className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-line">
+        <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
             <div className="mb-3 flex items-baseline justify-between gap-2">
                 <h2 className="font-bold text-ink">{t('Namoz')}</h2>
                 <span className="text-sm font-semibold text-muted">

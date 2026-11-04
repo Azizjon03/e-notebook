@@ -7,7 +7,7 @@ import { t, tk } from '../lib/i18n';
 const HEAD = [tk('Du'), tk('Se'), tk('Cho'), tk('Pa'), tk('Ju'), tk('Sha'), tk('Ya')];
 
 function Switcher({ view, anchor }) {
-    const cls = (v) => `flex-1 rounded-lg py-1.5 text-center text-sm font-bold ${view === v ? 'bg-white text-g800 shadow-sm' : 'text-muted'}`;
+    const cls = (v) => `flex-1 rounded-lg py-1.5 text-center text-sm font-bold ${view === v ? 'bg-card text-g800 shadow-sm' : 'text-muted'}`;
     return (
         <div className="flex rounded-xl bg-g100 p-1">
             <Link href={`/calendar?view=month&date=${anchor}`} className={cls('month')} preserveScroll>
@@ -57,7 +57,7 @@ function MonthView({ days, anchor, month, today }) {
                             key={day.date}
                             href={`/?date=${day.date}`}
                             className={`flex aspect-square flex-col items-center justify-start rounded-xl pt-1.5 text-sm ${
-                                isToday ? 'bg-g700 text-white' : inMonth ? 'bg-white text-ink ring-1 ring-line' : 'text-muted/50'
+                                isToday ? 'bg-g700 text-white' : inMonth ? 'bg-card text-ink ring-1 ring-line' : 'text-muted/50'
                             }`}
                         >
                             <span className="font-bold">{parseDate(day.date).getUTCDate()}</span>
@@ -131,7 +131,7 @@ export default function Calendar({ view, anchor, month, today, days, recurrences
             {view === 'week' ? <WeekView days={days} anchor={anchor} today={today} /> : <MonthView days={days} anchor={anchor} month={month} today={today} />}
 
             {recurrences.length > 0 && (
-                <section className="mt-6 rounded-2xl bg-white p-4 ring-1 ring-line">
+                <section className="mt-6 rounded-2xl bg-card p-4 ring-1 ring-line">
                     <h2 className="mb-2 font-bold text-ink">{t("Takrorlanadigan vazifalar")}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {recurrences.map((r) => (

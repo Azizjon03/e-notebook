@@ -26,7 +26,7 @@ export default function Login({ devLogin = false }) {
     return (
         <div className="mx-auto grid min-h-screen max-w-md place-items-center px-4">
             <Head title={t("Kirish")} />
-            <div className="w-full rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-line">
+            <div className="w-full rounded-2xl bg-card p-6 text-center shadow-sm ring-1 ring-line">
                 <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-g700 text-2xl font-extrabold text-white">
                     e
                 </span>

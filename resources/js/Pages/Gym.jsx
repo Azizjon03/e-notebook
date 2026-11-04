@@ -11,7 +11,7 @@ const pad = (n) => String(n).padStart(2, '0');
 function GenderPicker() {
     const pick = (gender) => router.post('/gym/gender', { gender }, { preserveScroll: true });
     return (
-        <section className="rounded-2xl bg-white p-5 ring-1 ring-line">
+        <section className="rounded-2xl bg-card p-5 ring-1 ring-line">
             <h2 className="font-bold text-ink">{t("Dasturni tanlashdan oldin")}</h2>
             <p className="mt-1 text-sm text-muted">{t("Sizga mos dasturlarni ko'rsatishimiz uchun jinsingizni tanlang.")}</p>
             <div className="mt-4 grid grid-cols-2 gap-3">
@@ -71,7 +71,7 @@ function Exercise({ exercise, index, done, disabled, onSet }) {
                             aria-pressed={checked}
                             onClick={() => onSet(index, checked ? i : i + 1, !checked && exercise.rest)}
                             className={`h-9 min-w-9 rounded-lg px-2 text-sm font-bold ${
-                                checked ? 'bg-g700 text-white' : 'bg-white text-muted ring-1 ring-line'
+                                checked ? 'bg-g700 text-white' : 'bg-card text-muted ring-1 ring-line'
                             }`}
                         >
                             {checked ? '✓' : i + 1}
@@ -96,7 +96,7 @@ function Workout({ workout, program }) {
     };
 
     return (
-        <section className="rounded-2xl bg-white p-4 ring-1 ring-line">
+        <section className="rounded-2xl bg-card p-4 ring-1 ring-line">
             <div className="flex items-baseline justify-between">
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted">{program.name}</p>
@@ -146,7 +146,7 @@ function ProgramCard({ program, current }) {
     };
 
     return (
-        <li className={`rounded-2xl bg-white p-4 ring-1 ${current ? 'ring-2 ring-g700' : 'ring-line'}`}>
+        <li className={`rounded-2xl bg-card p-4 ring-1 ${current ? 'ring-2 ring-g700' : 'ring-line'}`}>
             <div className="flex items-start justify-between gap-2">
                 <div>
                     <p className="font-bold text-ink">{program.name}</p>
@@ -215,7 +215,7 @@ export default function Gym({ gender, programs, current, workout, history }) {
             )}
 
             {history.length > 0 && (
-                <section className="mt-6 rounded-2xl bg-white p-4 ring-1 ring-line">
+                <section className="mt-6 rounded-2xl bg-card p-4 ring-1 ring-line">
                     <h2 className="mb-2 font-bold text-ink">{t("Oxirgi mashg'ulotlar")}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {history.map((h) => (

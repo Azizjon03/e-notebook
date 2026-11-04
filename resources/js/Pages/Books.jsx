@@ -52,7 +52,7 @@ function BookCard({ book, first, last }) {
     const opts = { preserveScroll: true };
 
     return (
-        <li className="rounded-2xl bg-white p-4 ring-1 ring-line">
+        <li className="rounded-2xl bg-card p-4 ring-1 ring-line">
             <div className="flex gap-3">
                 <div className={`w-1.5 shrink-0 rounded-full ${book.area === 'ilm' ? 'bg-gold' : 'bg-blue'}`} />
                 <div className="min-w-0 flex-1">
@@ -130,7 +130,7 @@ function AddBook({ areas }) {
                 form.transform((d) => ({ ...d, total_pages: d.total_pages || null }));
                 form.post('/books', { preserveScroll: true, onSuccess: () => { form.reset(); setOpen(false); } });
             }}
-            className="space-y-2 rounded-2xl bg-white p-4 text-sm ring-1 ring-line"
+            className="space-y-2 rounded-2xl bg-card p-4 text-sm ring-1 ring-line"
         >
             <input className={field} placeholder={t("Kitob nomi")} value={form.data.title} onChange={(e) => form.setData('title', e.target.value)} maxLength={200} />
             <input className={field} placeholder={t("Muallif")} value={form.data.author} onChange={(e) => form.setData('author', e.target.value)} maxLength={150} />
@@ -138,7 +138,7 @@ function AddBook({ areas }) {
                 <input className={field} placeholder={t("Bosqich (ixtiyoriy)")} value={form.data.stage} onChange={(e) => form.setData('stage', e.target.value)} maxLength={100} />
                 <NumberInput className={`${field} w-28`} maxLength={5} placeholder={t("Betlar")} value={form.data.total_pages} onChange={(v) => form.setData('total_pages', v)} />
             </div>
-            <select className={`${field} bg-white`} value={form.data.area} onChange={(e) => form.setData('area', e.target.value)}>
+            <select className={`${field} bg-card`} value={form.data.area} onChange={(e) => form.setData('area', e.target.value)}>
                 {areas.map((a) => (
                     <option key={a.key} value={a.key}>
                         {a.name}
