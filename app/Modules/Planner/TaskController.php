@@ -2,6 +2,7 @@
 
 namespace App\Modules\Planner;
 
+use App\Modules\Routine\PrayerTime;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,22 @@ class TaskController
             'tasks' => $tasks->map->toCard()->values(),
             'stats' => ['done' => $tasks->whereNotNull('done_at')->count(), 'total' => $tasks->count()],
             'overdue' => $overdue,
+            'prayers' => $this->prayers($request, $date),
+            'now' => CarbonImmutable::now($tz)->format('H:i'),
         ]);
+    }
+
+    /**
+     * @return list<array{key:string, name:string, time:string}>|null
+     */
+    private function prayers(Request $request, string $date): ?array
+    {
+        $regionId = $request->user()->region_id;
+        if (! $regionId) {
+            return null;
+        }
+
+        return PrayerTime::where('region_id', $regionId)->whereDate('date', $date)->first()?->toList();
     }
 
     public function store(Request $request): RedirectResponse

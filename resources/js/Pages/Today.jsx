@@ -1,10 +1,11 @@
 import { Head, Link, router } from '@inertiajs/react';
 import AppLayout from '../Components/AppLayout';
 import AddTaskForm from '../Components/AddTaskForm';
+import PrayerTimes from '../Components/PrayerTimes';
 import TaskItem from '../Components/TaskItem';
 import { addDays, formatLong } from '../lib/dates';
 
-export default function Today({ date, today, tasks, stats, overdue }) {
+export default function Today({ date, today, tasks, stats, overdue, prayers, now }) {
     const isToday = date === today;
     const percent = stats.total ? Math.round((stats.done / stats.total) * 100) : 0;
     const title = isToday ? 'Bugun' : date === addDays(today, 1) ? 'Ertaga' : date === addDays(today, -1) ? 'Kecha' : formatLong(date);
@@ -45,6 +46,8 @@ export default function Today({ date, today, tasks, stats, overdue }) {
                     Bugunga qaytish
                 </Link>
             )}
+
+            <PrayerTimes prayers={prayers} now={now} isToday={isToday} />
 
             {overdue > 0 && (
                 <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-gold/30">
