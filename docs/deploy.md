@@ -1,8 +1,11 @@
-# Birinchi deploy (e-store serveri, sslip.io)
+# Deploy (e-store serveri, enotebook.uz)
 
-Server: `155.117.43.22` (Ubuntu 24.04). Domen olinguncha vaqtinchalik manzil:
-`https://155-117-43-22.sslip.io`. Domen olingach `APP_URL` va Nginx `server_name`
-almashtiriladi, keyin `php artisan telegram:set-webhook` qayta ishga tushiriladi.
+Server: `155.117.43.22` (Ubuntu 24.04). Domen: `enotebook.uz` (Cloudflare).
+
+Cloudflare DNS: `enotebook.uz` va `www` uchun `A 155.117.43.22`. Sertifikat olinguncha yozuvlar
+"DNS only" (kulrang bulut) bo'lsin. `server-setup.sh` sertifikatni olgach, ularni "Proxied" ga o'tkazing
+va SSL/TLS rejimini **Full (strict)** qiling. Domen o'zgarsa: `sudo DOMAIN=<domen> bash server-setup.sh`,
+keyin `APP_URL=https://<domen> bash deploy.sh` va `php artisan telegram:set-webhook`.
 
 Sirlar (bot tokeni, `APP_KEY`, baza paroli) faqat serverdagi `.env` ga yoziladi.
 Ularni chatga yoki repoga yozmang.

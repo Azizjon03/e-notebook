@@ -9,7 +9,7 @@ umask 002
 APP_DIR=/var/www/e-notebook
 REPO=https://github.com/Azizjon03/e-notebook.git
 BRANCH=main
-URL=https://155-117-43-22.sslip.io
+URL=${APP_URL:-https://enotebook.uz}
 PASS_FILE=$HOME/.enotebook-db-password
 
 if [ ! -d "$APP_DIR/.git" ]; then
@@ -46,6 +46,9 @@ if [ ! -f .env ]; then
     set_env TELEGRAM_WEBHOOK_SECRET "$(openssl rand -hex 32)"
     set_env DEV_LOGIN false
 fi
+
+# Domen o'zgarsa ham APP_URL har safar yangilanadi.
+sed -i "s|^APP_URL=.*|APP_URL=$URL|" .env
 
 composer install --no-dev --optimize-autoloader --no-interaction --quiet
 grep -q '^APP_KEY=base64:' .env || php artisan key:generate --force
