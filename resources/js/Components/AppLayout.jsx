@@ -4,11 +4,11 @@ import { initials } from '../lib/initials';
 import HeaderControls from './HeaderControls';
 
 const TABS = [
-    { href: '/', label: tk('Bugun'), match: (url) => url === '/' || url.startsWith('/?') },
-    { href: '/calendar', label: tk('Kalendar'), match: (url) => url.startsWith('/calendar') },
-    { href: '/habits', label: tk('Odatlar'), match: (url) => url.startsWith('/habits') },
-    { href: '/study', label: tk("O'qish"), match: (url) => url.startsWith('/study') },
-    { href: '/books', label: tk('Kitoblar'), match: (url) => url.startsWith('/books') },
+    { href: '/', icon: <><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></>, label: tk('Bugun'), match: (url) => url === '/' || url.startsWith('/?') },
+    { href: '/calendar', icon: <><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></>, label: tk('Kalendar'), match: (url) => url.startsWith('/calendar') },
+    { href: '/habits', icon: <><path d="M17 1l4 4-4 4" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><path d="M7 23l-4-4 4-4" /><path d="M21 13v2a4 4 0 0 1-4 4H3" /></>, label: tk('Odatlar'), match: (url) => url.startsWith('/habits') },
+    { href: '/study', icon: <><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2M9 2h6" /></>, label: tk("O'qish"), match: (url) => url.startsWith('/study') },
+    { href: '/books', icon: <><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z" /><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z" /></>, label: tk('Kitoblar'), match: (url) => url.startsWith('/books') },
 ];
 
 export default function AppLayout({ children }) {
@@ -60,10 +60,15 @@ export default function AppLayout({ children }) {
                             <Link
                                 key={tab.href}
                                 href={tab.href}
-                                className={`flex-1 py-3 text-center text-[13px] font-bold ${active ? 'text-g700' : 'text-muted'}`}
+                                aria-label={t(tab.label)}
+                                title={t(tab.label)}
+                                aria-current={active ? 'page' : undefined}
+                                className={`flex flex-1 flex-col items-center py-2.5 ${active ? 'text-g700' : 'text-muted'}`}
                             >
-                                <span className={`mx-auto mb-1 block h-1 w-8 rounded-full ${active ? 'bg-g700' : 'bg-transparent'}`} />
-                                {t(tab.label)}
+                                <span className={`mb-1.5 block h-1 w-8 rounded-full ${active ? 'bg-g700' : 'bg-transparent'}`} />
+                                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    {tab.icon}
+                                </svg>
                             </Link>
                         );
                     })}

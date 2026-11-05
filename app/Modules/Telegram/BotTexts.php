@@ -17,7 +17,7 @@ class BotTexts
         'welcome' => "Assalomu alaykum! e-notebook'ga xush kelibsiz.\n\nIsm va familiyangizni yozing, masalan: <i>Ali Valiyev</i>\n\nTilni o'zgartirish: /til",
         'name_invalid' => 'Iltimos, ism va familiyani bitta xabarda yozing, masalan: <i>Ali Valiyev</i>',
         'ask_location' => "Rahmat, {name}! Namoz vaqtlari to'g'ri chiqishi uchun joylashuvingizni yuboring yoki viloyatni tanlang.",
-        'ask_gender' => "Jinsingizni tanlang. Bu faqat sizga mos zal dasturlarini ko'rsatish uchun kerak.",
+        'ask_gender' => 'Jinsingizni tanlang.',
         'done' => 'Tayyor, {name}! Endi kunlik rejalaringizni ilovada tuzishingiz mumkin.',
         'open_app' => 'Ilovani ochish uchun tugmani bosing.',
         'app_button' => 'Ilovani ochish',

@@ -82,7 +82,6 @@
     "Odatlar": "Habits",
     "Yoqilgan odatlar Bugun sahifasida chiqadi. Chiziqchalar oxirgi 7 kunni ko'rsatadi.": "Enabled habits appear on the Today page. The bars show the last 7 days.",
     "Dasturni tanlashdan oldin": "Before choosing a program",
-    "Sizga mos dasturlarni ko'rsatishimiz uchun jinsingizni tanlang.": "Choose your gender so we can show programs that suit you.",
     "Dam olish": "Rest",
     "O'tkazib yuborish": "Skip",
     "Bugun: :day": "Today: :day",
@@ -237,7 +236,6 @@
     "Assalomu alaykum! e-notebook'ga xush kelibsiz.\n\nIsm va familiyangizni yozing, masalan: <i>Ali Valiyev</i>\n\nTilni o'zgartirish: /til": "Assalamu alaykum! Welcome to e-notebook.\n\nPlease send your first and last name, for example: <i>Ali Valiyev</i>\n\nChange language: /til",
     "Iltimos, ism va familiyani bitta xabarda yozing, masalan: <i>Ali Valiyev</i>": "Please send your first and last name in one message, for example: <i>Ali Valiyev</i>",
     "Rahmat, {name}! Namoz vaqtlari to'g'ri chiqishi uchun joylashuvingizni yuboring yoki viloyatni tanlang.": "Thanks, {name}! To get accurate prayer times, send your location or choose your region.",
-    "Jinsingizni tanlang. Bu faqat sizga mos zal dasturlarini ko'rsatish uchun kerak.": "Choose your gender. It is only used to show gym programs that suit you.",
     "Tayyor, {name}! Endi kunlik rejalaringizni ilovada tuzishingiz mumkin.": "All set, {name}! You can now plan your days in the app.",
     "Ilovani ochish uchun tugmani bosing.": "Tap the button to open the app.",
     "Ilovani ochish": "Open app",
@@ -388,5 +386,6 @@
     "Tugatilgan kitob": "Books finished",
     "Ma'lumotlarim": "My details",
     "Yorug' rejim": "Light mode",
-    "Tungi rejim": "Dark mode"
+    "Tungi rejim": "Dark mode",
+    "Jinsingizni tanlang.": "Choose your gender."
 }
