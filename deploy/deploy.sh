@@ -64,8 +64,10 @@ URL=$(grep '^APP_URL=' .env | cut -d= -f2-)
 
 composer install --no-dev --optimize-autoloader --no-interaction --quiet
 grep -q '^APP_KEY=base64:' .env || php artisan key:generate --force
-npm ci --no-audit --no-fund --silent
-npm run build --silent
+npm ci --no-audit --no-fund --loglevel=error
+# npm ci ba'zan jim to'xtab qoladi: vite yo'q bo'lsa, bir marta qayta o'rnatiladi.
+[ -x node_modules/.bin/vite ] || { echo "npm paketlari to'liq emas, qayta o'rnatilmoqda"; rm -rf node_modules; npm ci --no-audit --no-fund --loglevel=error; }
+npm run build
 
 chgrp -R www-data storage bootstrap/cache
 chmod -R g+rwX storage bootstrap/cache
