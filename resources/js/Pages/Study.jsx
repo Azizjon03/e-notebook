@@ -5,6 +5,7 @@ import LevelBar from '../Components/LevelBar';
 import { haptic } from '../telegram/webapp';
 import { weekdayShort } from '../lib/dates';
 import { t } from '../lib/i18n';
+import { prepareAlarm, ringAlarm } from '../lib/alarm';
 
 function useElapsed(startedAt) {
     const [now, setNow] = useState(Date.now());
@@ -26,8 +27,11 @@ function Timer({ running }) {
     const shown = Math.abs(left);
 
     useEffect(() => {
-        if (left === 0) haptic('heavy');
-    }, [left]);
+        if (left === 0) {
+            haptic('heavy');
+            ringAlarm(t('Vaqt tugadi!'), running.title || t("O'qish sessiyasi"));
+        }
+    }, [left, running.title]);
 
     return (
         <section className="rounded-2xl bg-g700 p-6 text-center text-white">
@@ -36,17 +40,30 @@ function Timer({ running }) {
                 {left < 0 && '+'}
                 {pad(Math.floor(shown / 60))}:{pad(shown % 60)}
             </p>
-            <p className="mt-1 text-sm text-white/80">{left < 0 ? t('Reja vaqti tugadi, dam oling') : t(':minutes daqiqalik reja', { minutes: running.planned_minutes })}</p>
+            <p className="mt-1 text-sm text-white/80">
+                {left < 0
+                    ? t('Reja vaqti tugadi, dam oling')
+                    : t(':minutes daqiqalik reja', {
+                          minutes: running.planned_minutes,
+                      })}
+            </p>
             <div className="mx-auto mt-4 h-2 max-w-xs rounded-full bg-white/25">
                 <div className="h-full rounded-full bg-white" style={{ width: `${percent}%` }} />
             </div>
-            <button
-                type="button"
-                onClick={() => router.post(`/study/${running.id}/stop`, {}, { preserveScroll: true })}
-                className="mt-5 rounded-xl bg-white px-6 py-3 font-bold text-g700"
-            >
-                {t("Tugatish")}
-            </button>
+            <div className="mt-5 flex justify-center gap-2">
+                {running.book_id && (
+                    <Link href={`/books/${running.book_id}/read`} className="rounded-xl bg-white/15 px-5 py-3 font-bold text-white">
+                        {t('📖 Kitobni ochish')}
+                    </Link>
+                )}
+                <button
+                    type="button"
+                    onClick={() => router.post(`/study/${running.id}/stop`, {}, { preserveScroll: true })}
+                    className="rounded-xl bg-white px-6 py-3 font-bold text-g700"
+                >
+                    {t('Tugatish')}
+                </button>
+            </div>
         </section>
     );
 }
@@ -58,11 +75,12 @@ function StartForm({ areas }) {
             onSubmit={(e) => {
                 e.preventDefault();
                 haptic('medium');
+                prepareAlarm();
                 form.post('/study/start', { preserveScroll: true });
             }}
             className="space-y-3 rounded-2xl bg-card p-5 ring-1 ring-line"
         >
-            <h2 className="text-lg font-bold text-ink">{t("Yangi sessiya")}</h2>
+            <h2 className="text-lg font-bold text-ink">{t('Yangi sessiya')}</h2>
             <input
                 value={form.data.title}
                 onChange={(e) => form.setData('title', e.target.value)}
@@ -92,7 +110,7 @@ function StartForm({ areas }) {
                 </div>
             </div>
             <button className="w-full rounded-xl bg-g700 py-3 font-bold text-white" disabled={form.processing}>
-                {t("Boshlash")}
+                {t('Boshlash')}
             </button>
         </form>
     );
@@ -110,7 +128,7 @@ export default function Study({ running, today, week, level, pointsToday, recent
 
             <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
                 <div className="mb-3 flex items-baseline justify-between">
-                    <h2 className="font-bold text-ink">{t("Oxirgi 7 kun")}</h2>
+                    <h2 className="font-bold text-ink">{t('Oxirgi 7 kun')}</h2>
                     <Link href="/stats" className="text-sm font-semibold text-g700">
                         {t("To'liq statistika")}
                     </Link>
@@ -119,7 +137,13 @@ export default function Study({ running, today, week, level, pointsToday, recent
                     {week.map((d) => (
                         <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
                             <span className="text-[10px] font-semibold text-muted">{d.minutes || ''}</span>
-                            <div className="w-full rounded-md bg-g500" style={{ height: `${Math.max(3, (d.minutes / maxMinutes) * 80)}px`, opacity: d.minutes ? 1 : 0.2 }} />
+                            <div
+                                className="w-full rounded-md bg-g500"
+                                style={{
+                                    height: `${Math.max(3, (d.minutes / maxMinutes) * 80)}px`,
+                                    opacity: d.minutes ? 1 : 0.2,
+                                }}
+                            />
                             <span className="text-[11px] font-bold text-muted">{weekdayShort(d.date)}</span>
                         </div>
                     ))}
@@ -128,7 +152,7 @@ export default function Study({ running, today, week, level, pointsToday, recent
 
             {today.length > 0 && (
                 <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
-                    <h2 className="mb-2 font-bold text-ink">{t("Bugungi sessiyalar")}</h2>
+                    <h2 className="mb-2 font-bold text-ink">{t('Bugungi sessiyalar')}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {today.map((s) => (
                             <li key={s.id} className="flex items-center justify-between gap-2 py-2">
@@ -136,7 +160,8 @@ export default function Study({ running, today, week, level, pointsToday, recent
                                     <span className="text-muted">{s.time}</span> {s.title}
                                 </span>
                                 <span className="shrink-0 font-semibold text-ink">
-                                    {t(':m daq', { m: s.minutes })} · <span className="text-g700">+{s.points}</span>
+                                    {t(':m daq', { m: s.minutes })}
+                                    {s.pages !== null && s.pages !== undefined && ` · ${t(':pages bet', { pages: s.pages })}`} · <span className="text-g700">+{s.points}</span>
                                 </span>
                             </li>
                         ))}
@@ -146,7 +171,7 @@ export default function Study({ running, today, week, level, pointsToday, recent
 
             {recent.length > 0 && (
                 <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-line">
-                    <h2 className="mb-2 font-bold text-ink">{t("Oxirgi ballar")}</h2>
+                    <h2 className="mb-2 font-bold text-ink">{t('Oxirgi ballar')}</h2>
                     <ul className="divide-y divide-line text-sm">
                         {recent.map((r, i) => (
                             <li key={i} className="flex justify-between py-2">

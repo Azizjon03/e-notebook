@@ -13,7 +13,6 @@ function GenderPicker() {
     return (
         <section className="rounded-2xl bg-card p-5 ring-1 ring-line">
             <h2 className="font-bold text-ink">{t("Dasturni tanlashdan oldin")}</h2>
-            <p className="mt-1 text-sm text-muted">{t("Sizga mos dasturlarni ko'rsatishimiz uchun jinsingizni tanlang.")}</p>
             <div className="mt-4 grid grid-cols-2 gap-3">
                 <button type="button" onClick={() => pick('male')} className="rounded-xl bg-g100 py-3 font-bold text-g800">
                     {t("Erkak")}

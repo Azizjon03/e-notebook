@@ -7,6 +7,7 @@ use App\Modules\Core\I18n\Locale;
 use App\Modules\Planner\Task;
 use App\Modules\Routine\Habit;
 use App\Modules\Routine\PrayerTime;
+use App\Modules\Study\StudySession;
 use App\Modules\Telegram\Summaries;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +60,7 @@ class ReminderPlanner
             ...$this->planning($user, $now, $sent->all()),
             ...$this->weekly($user, $now),
             ...$this->daySummary($user, $now),
+            ...$this->studyTimers($user, $now),
         ];
 
         return array_values(array_filter($due, fn (Reminder $r) => ! $sent->has($r->ref)));
@@ -67,6 +69,27 @@ class ReminderPlanner
     private function isDue(CarbonImmutable $now, CarbonImmutable $at): bool
     {
         return $now->gte($at) && $now->lt($at->addMinutes(self::WINDOW));
+    }
+
+    /**
+     * Ochiq o'qish sessiyasining rejalashtirilgan vaqti tugaganda (ilova yopiq bo'lsa ham) bildiradi.
+     *
+     * @return list<Reminder>
+     */
+    private function studyTimers(User $user, CarbonImmutable $now): array
+    {
+        return StudySession::withoutGlobalScope('owner')->where('user_id', $user->id)
+            ->whereNull('ended_at')->where('started_at', '>=', $now->subDay()->utc())
+            ->get()
+            ->filter(fn (StudySession $s) => $this->isDue($now, CarbonImmutable::parse($s->started_at)->addMinutes($s->planned_minutes)))
+            ->map(fn (StudySession $s) => new Reminder(
+                "study:{$s->id}",
+                __("⏰ :minutes daqiqalik o'qish vaqti tugadi: :title. Sessiyani ilovada tugating.", [
+                    'minutes' => $s->planned_minutes,
+                    'title' => $s->title ?: __("O'qish sessiyasi"),
+                ]),
+            ))
+            ->values()->all();
     }
 
     /**

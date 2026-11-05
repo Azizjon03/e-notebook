@@ -14,9 +14,6 @@ use Inertia\Response;
 
 class StudyController
 {
-    /** Unutilgan taymer shu daqiqadan ko'p hisoblanmaydi. */
-    public const MAX_MINUTES = 240;
-
     public function index(Request $request, Points $points): Response
     {
         $user = $request->user();
@@ -52,11 +49,13 @@ class StudyController
                 'area' => $running->area->key,
                 'planned_minutes' => $running->planned_minutes,
                 'started_at' => $running->started_at->toIso8601String(),
+                'book_id' => $running->book_id,
             ] : null,
             'today' => $todays->filter(fn ($s) => ! $s->isRunning())->values()->map(fn (StudySession $s) => [
                 'id' => $s->id,
                 'title' => $s->title ?: $s->area->name,
                 'minutes' => $s->minutes,
+                'pages' => $s->pages_read,
                 'points' => StudySession::pointsFor((int) $s->minutes),
                 'time' => $s->started_at->timezone($tz)->format('H:i'),
             ]),
@@ -72,7 +71,7 @@ class StudyController
         ]);
     }
 
-    public function start(Request $request): RedirectResponse
+    public function start(Request $request, SessionFinisher $finisher): RedirectResponse
     {
         $data = $request->validate([
             'title' => ['nullable', 'string', 'max:150'],
@@ -81,7 +80,7 @@ class StudyController
         ]);
 
         // Bir vaqtda bitta sessiya: oldingisi ochiq qolgan bo'lsa yopiladi.
-        StudySession::whereNull('ended_at')->get()->each(fn (StudySession $s) => $this->finish($s, app(Points::class)));
+        StudySession::whereNull('ended_at')->get()->each(fn (StudySession $s) => $finisher->finish($s));
 
         StudySession::create([
             'area_id' => Area::idFor($data['area']),
@@ -93,10 +92,10 @@ class StudyController
         return back();
     }
 
-    public function stop(StudySession $session, Points $points): RedirectResponse
+    public function stop(StudySession $session, SessionFinisher $finisher): RedirectResponse
     {
         if ($session->isRunning()) {
-            $this->finish($session, $points);
+            $finisher->finish($session);
         }
 
         return back();
@@ -108,14 +107,6 @@ class StudyController
         $session->delete();
 
         return back();
-    }
-
-    private function finish(StudySession $session, Points $points): void
-    {
-        $minutes = min(self::MAX_MINUTES, (int) floor($session->started_at->diffInSeconds(now()) / 60));
-        $session->update(['ended_at' => now(), 'minutes' => $minutes]);
-
-        $points->award($session->user, $session, 'session', StudySession::pointsFor($minutes));
     }
 
     private function label(string $type, string $reason): string
