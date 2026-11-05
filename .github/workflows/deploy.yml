@@ -1,0 +1,71 @@
+name: Deploy
+
+# main ga push bo'lganda CI (testlar) muvaffaqiyatli tugasa, serverga avtomatik chiqaradi.
+# Qo'lda ham ishga tushirish mumkin: Actions → Deploy → Run workflow.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# Ketma-ket push bo'lsa, deploylar navbat bilan ishlaydi (biri ikkinchisini to'xtatmaydi).
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: production
+
+    steps:
+      - name: SSH kalitini tayyorlash
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          if [ -z "$DEPLOY_SSH_KEY" ] || [ -z "$DEPLOY_KNOWN_HOSTS" ]; then
+            echo "::error::DEPLOY_SSH_KEY va DEPLOY_KNOWN_HOSTS secretlari qo'shilmagan (docs/deploy.md, 8-bo'lim)."
+            exit 1
+          fi
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # Serverdagi kalit faqat deploy.sh ni ishga tushira oladi (authorized_keys dagi command=...),
+      # shuning uchun bu yerda buyruq yuborilmaydi.
+      - name: Serverga chiqarish
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          ssh -p "${DEPLOY_PORT:-22}" -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ServerAliveInterval=30 \
+            "${DEPLOY_USER:-deploy}@${DEPLOY_HOST:-155.117.43.22}"
+
+      - name: Sayt ishlayaptimi
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          url="${APP_URL:-https://155-117-43-22.sslip.io}"
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url/login" || true)
+            echo "$url/login → $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 5
+          done
+          echo "::error::Sayt 200 qaytarmadi"
+          exit 1
+
+      - name: Tozalash
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
