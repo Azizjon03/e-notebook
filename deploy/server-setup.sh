@@ -10,7 +10,9 @@ set -euo pipefail
 
 APP_USER=deploy
 APP_DIR=/var/www/e-notebook
-DOMAIN=155-117-43-22.sslip.io
+# Domen: sudo DOMAIN=enotebook.uz bash server-setup.sh (www.<domen> ham qo'shiladi)
+DOMAIN=${DOMAIN:-enotebook.uz}
+NAMES="$DOMAIN www.$DOMAIN"
 PHP=8.4
 DB=enotebook
 
@@ -40,14 +42,39 @@ sudo -u postgres psql -tAc "select 1 from pg_database where datname='$DB'" | gre
 echo "3/7 Redis"
 systemctl enable --now redis-server
 
-echo "4/7 Nginx: $DOMAIN"
+echo "4/7 Nginx: $NAMES"
 cat > /etc/nginx/sites-available/e-notebook <<NGINX
 server {
     listen 80;
-    server_name $DOMAIN;
+    server_name $NAMES;
     root $APP_DIR/public;
     index index.php;
     client_max_body_size 10m;
+
+    # Cloudflare orqali kelganda foydalanuvchining haqiqiy IP manzili (urinishlar cheklovi uchun).
+    set_real_ip_from 173.245.48.0/20;
+    set_real_ip_from 103.21.244.0/22;
+    set_real_ip_from 103.22.200.0/22;
+    set_real_ip_from 103.31.4.0/22;
+    set_real_ip_from 141.101.64.0/18;
+    set_real_ip_from 108.162.192.0/18;
+    set_real_ip_from 190.93.240.0/20;
+    set_real_ip_from 188.114.96.0/20;
+    set_real_ip_from 197.234.240.0/22;
+    set_real_ip_from 198.41.128.0/17;
+    set_real_ip_from 162.158.0.0/15;
+    set_real_ip_from 104.16.0.0/13;
+    set_real_ip_from 104.24.0.0/14;
+    set_real_ip_from 172.64.0.0/13;
+    set_real_ip_from 131.0.72.0/22;
+    set_real_ip_from 2400:cb00::/32;
+    set_real_ip_from 2606:4700::/32;
+    set_real_ip_from 2803:f800::/32;
+    set_real_ip_from 2405:b500::/32;
+    set_real_ip_from 2405:8100::/32;
+    set_real_ip_from 2a06:98c0::/29;
+    set_real_ip_from 2c0f:f248::/32;
+    real_ip_header CF-Connecting-IP;
 
     location / { try_files \$uri \$uri/ /index.php?\$query_string; }
     location ~ \.php\$ {
@@ -62,7 +89,7 @@ nginx -t
 systemctl reload nginx
 
 echo "5/7 HTTPS (Let's Encrypt)"
-certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email --redirect
+certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email --redirect
 
 echo "6/7 Queue xizmati va scheduler"
 cat > /etc/systemd/system/enotebook-queue.service <<UNIT
