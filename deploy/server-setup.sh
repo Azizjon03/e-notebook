@@ -10,9 +10,16 @@ set -euo pipefail
 
 APP_USER=deploy
 APP_DIR=/var/www/e-notebook
-# Domen: sudo DOMAIN=enotebook.uz bash server-setup.sh (www.<domen> ham qo'shiladi)
+# Domen: sudo DOMAIN=enotebook.uz bash server-setup.sh
+# www.<domen> faqat DNS da topilsa qo'shiladi (sslip.io manzillari uchun qo'shilmaydi):
+# aks holda sertifikat olinmay qoladi va sayt HTTPS siz qoladi.
 DOMAIN=${DOMAIN:-enotebook.uz}
-NAMES="$DOMAIN www.$DOMAIN"
+NAMES="$DOMAIN"
+CERT_ARGS=(-d "$DOMAIN")
+if [[ "$DOMAIN" != *.sslip.io ]] && getent hosts "www.$DOMAIN" >/dev/null; then
+    NAMES="$DOMAIN www.$DOMAIN"
+    CERT_ARGS+=(-d "www.$DOMAIN")
+fi
 PHP=8.4
 DB=enotebook
 
@@ -93,7 +100,7 @@ nginx -t
 systemctl reload nginx
 
 echo "5/7 HTTPS (Let's Encrypt)"
-certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email --redirect
+certbot --nginx "${CERT_ARGS[@]}" --non-interactive --agree-tos --register-unsafely-without-email --redirect
 
 echo "6/7 Queue xizmati va scheduler"
 cat > /etc/systemd/system/enotebook-queue.service <<UNIT
