@@ -3,14 +3,22 @@
 #   bash /var/www/e-notebook/deploy/deploy.sh          (keyingi yangilashlar)
 #   bash deploy.sh                                       (birinchi marta, papka bo'sh bo'lsa ham)
 # Avval bir marta `sudo bash deploy/server-setup.sh` ishlagan bo'lishi kerak.
+# GitHub Actions ham main ga push bo'lganda shu skriptni ishga tushiradi (.github/workflows/deploy.yml).
 set -euo pipefail
 umask 002
+
+# Butun skript avval to'liq o'qiladi: `git reset` uni ish paytida yangilasa ham buzilmaydi.
+{
 
 APP_DIR=/var/www/e-notebook
 REPO=https://github.com/Azizjon03/e-notebook.git
 BRANCH=main
 URL=${APP_URL:-https://enotebook.uz}
 PASS_FILE=$HOME/.enotebook-db-password
+
+# Bir vaqtda ikkita deploy ishlamasin (masalan, ketma-ket ikki push).
+exec 9>"$HOME/.enotebook-deploy.lock"
+flock -w 600 9 || { echo "Boshqa deploy hali tugamadi"; exit 1; }
 
 if [ ! -d "$APP_DIR/.git" ]; then
     echo "Kod yuklanmoqda"
@@ -47,8 +55,12 @@ if [ ! -f .env ]; then
     set_env DEV_LOGIN false
 fi
 
-# Domen o'zgarsa ham APP_URL har safar yangilanadi.
-sed -i "s|^APP_URL=.*|APP_URL=$URL|" .env
+# APP_URL faqat aniq berilganda o'zgaradi (masalan: APP_URL=https://enotebook.uz bash deploy.sh),
+# aks holda .env dagi qiymat qoladi. Avtomatik deploy uni o'zgartirmaydi.
+if [ -n "${APP_URL:-}" ]; then
+    sed -i "s|^APP_URL=.*|APP_URL=$APP_URL|" .env
+fi
+URL=$(grep '^APP_URL=' .env | cut -d= -f2-)
 
 composer install --no-dev --optimize-autoloader --no-interaction --quiet
 grep -q '^APP_KEY=base64:' .env || php artisan key:generate --force
@@ -68,3 +80,5 @@ sudo -n /usr/bin/systemctl reload php8.4-fpm
 
 echo "Tayyor: $URL"
 grep -q '^TELEGRAM_BOT_TOKEN=.\+' .env || echo "Eslatma: .env da TELEGRAM_BOT_TOKEN va TELEGRAM_BOT_USERNAME ni o'zingiz yozing, keyin: php artisan optimize && php artisan telegram:set-webhook"
+exit 0
+}
