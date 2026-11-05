@@ -12,6 +12,7 @@ use App\Modules\Core\ProfileController;
 use App\Modules\Core\SettingsController;
 use App\Modules\Core\StatsController;
 use App\Modules\Ilm\BookController;
+use App\Modules\Ilm\BookReaderController;
 use App\Modules\Planner\CalendarController;
 use App\Modules\Planner\TaskController;
 use App\Modules\Routine\HabitController;
@@ -69,6 +70,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
     Route::post('/books/{book}/move', [BookController::class, 'move'])->name('books.move');
     Route::post('/books/{book}/log', [BookController::class, 'log'])->name('books.log');
+    Route::post('/books/{book}/pdf', [BookReaderController::class, 'upload'])->middleware('throttle:20,1')->name('books.pdf.upload');
+    Route::get('/books/{book}/pdf', [BookReaderController::class, 'file'])->name('books.pdf');
+    Route::delete('/books/{book}/pdf', [BookReaderController::class, 'removePdf'])->name('books.pdf.remove');
+    Route::get('/books/{book}/read', [BookReaderController::class, 'show'])->name('books.read');
+    Route::put('/books/{book}/progress', [BookReaderController::class, 'progress'])->middleware('throttle:120,1')->name('books.progress');
+    Route::post('/books/{book}/session', [BookReaderController::class, 'startSession'])->name('books.session');
 
     Route::get('/study', [StudyController::class, 'index'])->name('study');
     Route::post('/study/start', [StudyController::class, 'start'])->name('study.start');

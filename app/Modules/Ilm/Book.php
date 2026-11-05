@@ -7,6 +7,7 @@ use App\Modules\Core\Concerns\BelongsToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Book extends Model
 {
@@ -14,7 +15,9 @@ class Book extends Model
 
     public const STATUSES = ['planned', 'reading', 'finished'];
 
-    protected $fillable = ['user_id', 'area_id', 'title', 'author', 'stage', 'position', 'total_pages', 'current_page', 'status', 'started_on', 'finished_on'];
+    protected $fillable = ['user_id', 'area_id', 'title', 'author', 'stage', 'position', 'total_pages', 'current_page', 'status', 'started_on', 'finished_on', 'pdf_path', 'pdf_name', 'pdf_size', 'last_viewed_page'];
+
+    protected $hidden = ['pdf_path'];
 
     protected function casts(): array
     {
@@ -23,6 +26,8 @@ class Book extends Model
             'finished_on' => 'date:Y-m-d',
             'total_pages' => 'integer',
             'current_page' => 'integer',
+            'pdf_size' => 'integer',
+            'last_viewed_page' => 'integer',
         ];
     }
 
@@ -34,6 +39,19 @@ class Book extends Model
     public function logs(): HasMany
     {
         return $this->hasMany(ReadingLog::class);
+    }
+
+    public function hasPdf(): bool
+    {
+        return $this->pdf_path !== null;
+    }
+
+    public function deletePdf(): void
+    {
+        if ($this->pdf_path) {
+            Storage::disk('local')->delete($this->pdf_path);
+        }
+        $this->forceFill(['pdf_path' => null, 'pdf_name' => null, 'pdf_size' => null, 'last_viewed_page' => null])->save();
     }
 
     public function percent(): int
@@ -61,6 +79,9 @@ class Book extends Model
             'last_chapter' => $last?->chapter,
             'last_read' => $last?->date?->toDateString(),
             'finished_on' => $this->finished_on?->toDateString(),
+            'has_pdf' => $this->hasPdf(),
+            'pdf_name' => $this->pdf_name,
+            'pdf_size' => $this->pdf_size,
         ];
     }
 }

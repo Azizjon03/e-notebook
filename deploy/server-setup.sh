@@ -49,7 +49,8 @@ server {
     server_name $NAMES;
     root $APP_DIR/public;
     index index.php;
-    client_max_body_size 10m;
+    # Kitob PDF'lari 50 MB gacha yuklanadi.
+    client_max_body_size 60m;
 
     # Cloudflare orqali kelganda foydalanuvchining haqiqiy IP manzili (urinishlar cheklovi uchun).
     set_real_ip_from 173.245.48.0/20;
@@ -80,6 +81,9 @@ server {
     location ~ \.php\$ {
         include snippets/fastcgi-php.conf;
         fastcgi_pass unix:/run/php/php$PHP-fpm.sock;
+        # Faqat shu sayt uchun (kitchens.uz ga ta'sir qilmaydi).
+        fastcgi_param PHP_VALUE "upload_max_filesize=50M
+post_max_size=55M";
     }
     location ~ /\.(?!well-known) { deny all; }
 }

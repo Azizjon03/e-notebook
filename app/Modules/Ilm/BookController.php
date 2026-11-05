@@ -3,7 +3,6 @@
 namespace App\Modules\Ilm;
 
 use App\Modules\Core\Area;
-use App\Modules\Core\Points;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,12 +21,16 @@ class BookController
         $books = Book::with(['area', 'logs' => fn ($q) => $q->latest('id')->limit(1)])
             ->orderBy('position')->orderBy('id')->get();
 
-        $pagesWeek = ReadingLog::whereIn('book_id', $books->pluck('id'))
-            ->whereDate('date', '>=', $weekAgo)->get()->sum(fn (ReadingLog $l) => $l->pages());
+        $weekLogs = ReadingLog::whereIn('book_id', $books->pluck('id'))->whereDate('date', '>=', $weekAgo)->get();
+        $today = CarbonImmutable::now($tz)->toDateString();
+        $todayByBook = $weekLogs->filter(fn (ReadingLog $l) => $l->date->toDateString() === $today)
+            ->groupBy('book_id')->map(fn ($logs) => $logs->sum(fn (ReadingLog $l) => $l->pages()));
 
         return Inertia::render('Books', [
-            'books' => $books->map->toCard()->values(),
-            'pagesWeek' => $pagesWeek,
+            'books' => $books->map(fn (Book $b) => $b->toCard() + ['pages_today' => (int) ($todayByBook[$b->id] ?? 0)])->values(),
+            'pagesWeek' => $weekLogs->sum(fn (ReadingLog $l) => $l->pages()),
+            'pagesToday' => (int) $todayByBook->sum(),
+            'maxPdfMb' => BookReaderController::MAX_MB,
             'areas' => Area::whereIn('key', [Area::ILM, Area::STUDY])->orderBy('sort')->get(['key', 'name']),
         ]);
     }
@@ -56,6 +59,7 @@ class BookController
 
     public function destroy(Book $book): RedirectResponse
     {
+        $book->deletePdf();
         $book->delete();
 
         return back();
@@ -84,7 +88,7 @@ class BookController
     /**
      * O'qilgan sahifani yozadi: kitob o'qilayotganga o'tadi, oxiriga yetsa tugatilgan bo'ladi.
      */
-    public function log(Request $request, Book $book, Points $points): RedirectResponse
+    public function log(Request $request, Book $book, ReadingProgress $progress): RedirectResponse
     {
         $max = $book->total_pages ?? 100000;
         $data = $request->validate([
@@ -95,28 +99,7 @@ class BookController
             'to_page.max' => __('Kitobda :max sahifa bor.', ['max' => $max]),
         ]);
 
-        $user = $request->user();
-        $today = CarbonImmutable::now($user->timezone)->toDateString();
-
-        $book->logs()->create([
-            'date' => $today,
-            'from_page' => $book->current_page,
-            'to_page' => $data['to_page'],
-            'chapter' => $data['chapter'] ?? null,
-        ]);
-
-        $finished = $book->total_pages && $data['to_page'] >= $book->total_pages;
-        $book->update([
-            'current_page' => $data['to_page'],
-            'status' => $finished ? 'finished' : 'reading',
-            'started_on' => $book->started_on ?? $today,
-            'finished_on' => $finished ? $today : null,
-        ]);
-
-        // Ilm kitobidan kunlik o'qish uchun kuniga bir marta ball.
-        if ($book->area?->key === Area::ILM) {
-            $points->award($user, $user, 'ilm_reading:'.$today, (int) config('points.ilm_reading'));
-        }
+        $progress->record($book, $request->user(), (int) $data['to_page'], $data['chapter'] ?? null);
 
         return back();
     }

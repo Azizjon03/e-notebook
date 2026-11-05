@@ -75,3 +75,12 @@ Tiklash:
 ```bash
 pg_restore --clean --no-owner -d enotebook storage/app/backups/<fayl>.dump
 ```
+
+## 7. Kitob PDF fayllari
+
+Foydalanuvchilar yuklagan PDF'lar `storage/app/private/books/<user_id>/` da saqlanadi (bazada emas),
+shuning uchun `backup:database` ularni o'z ichiga olmaydi. Bu papkani ham vaqti-vaqti bilan zaxiralang.
+
+Bitta fayl 50 MB gacha. Buning uchun nginx'da `client_max_body_size 60m` va faqat shu sayt uchun
+`upload_max_filesize=50M`, `post_max_size=55M` (PHP_VALUE) qo'yilgan. Eski serverda bu sozlamalar
+`server-setup.sh` ni qayta ishga tushirganda qo'llanadi (kitchens.uz ga ta'sir qilmaydi).
